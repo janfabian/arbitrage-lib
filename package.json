@@ -2,17 +2,30 @@
   "name": "arbitrage-lib",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "test": "NODE_OPTIONS=--openssl-legacy-provider jest"
+    "build": "rm -rf dist && tsc",
+    "test": "NODE_OPTIONS=--openssl-legacy-provider jest",
+    "prepublish": "npm run build"
   },
   "files": [
     "dist",
     "LICENSE",
     "README.md"
   ],
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:janfabian/arbitrage-lib.git"
+  },
+  "bugs": {
+    "url": "https://github.com/janfabian/arbitrage-lib/issues"
+  },
+  "homepage": "https://github.com/janfabian/arbitrage-lib#readme",
+  "keywords": [
+    "arbitrage"
+  ],
+  "author": "janfabian",
+  "license": "MIT",
   "prettier": {
     "semi": false,
     "singleQuote": true,
