@@ -1,13 +1,26 @@
-name: Publish to NPM
+name: Release
 
 on:
-  push:
-    tags:
-      - "**"
+  workflow_run:
+    workflows: ["Test"]
+    branches: [main]
+    types:
+      - completed
 
 jobs:
-  build:
+  bump:
     runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Automated Version Bump"
+        uses: "phips28/gh-action-bump-version@master"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: ["bump"]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
