@@ -13,15 +13,28 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: actions/checkout@v3
-      - name: "cat package.json"
-        run: cat ./package.json
       - name: "Automated Version Bump"
         uses: "phips28/gh-action-bump-version@master"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: "cat package.json"
-        run: cat ./package.json
-      - name: "Output Step"
+
+  release:
+    runs-on: ubuntu-latest
+    needs: ["bump"]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+      - uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - run: npm ci
+      - run: npm run build
+      - run: npm publish --access public
         env:
-          NEW_TAG: ${{ steps.version-bump.outputs.newTag }}
-        run: echo "new tag $NEW_TAG"
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
