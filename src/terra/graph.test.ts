@@ -1,5 +1,5 @@
 import { GraphAssetNode } from '../types/terra.js'
-import { createGraph, generateGraphNodeId } from './graph.js'
+import { createGraph, findPaths, generateGraphNodeId } from './graph.js'
 
 describe('graph', () => {
   describe('generateGraphNodeId', () => {
@@ -14,7 +14,7 @@ describe('graph', () => {
         },
       }
 
-      expect(generateGraphNodeId(obj)).toEqual('dexId_native_denom')
+      expect(generateGraphNodeId(obj)).toEqual('dexId:native_denom')
     })
 
     it('token asset', () => {
@@ -28,7 +28,7 @@ describe('graph', () => {
         },
       }
 
-      expect(generateGraphNodeId(obj)).toEqual('dexId_contract_addr')
+      expect(generateGraphNodeId(obj)).toEqual('dexId:contract_addr')
     })
   })
 
@@ -56,8 +56,8 @@ describe('graph', () => {
       const graph = createGraph([[asset1, asset2]])
 
       expect([...graph.entries()]).toEqual([
-        ['dexId_native_denom', new Set(['dexId_native_denom2'])],
-        ['dexId_native_denom2', new Set(['dexId_native_denom'])],
+        ['dexId:native_denom', new Set(['dexId:native_denom2'])],
+        ['dexId:native_denom2', new Set(['dexId:native_denom'])],
       ])
     })
 
@@ -97,11 +97,11 @@ describe('graph', () => {
 
       expect([...graph.entries()]).toEqual([
         [
-          'dexId_native_denom',
-          new Set(['dexId_native_denom2', 'dexId_token_addr']),
+          'dexId:native_denom',
+          new Set(['dexId:native_denom2', 'dexId:token_addr']),
         ],
-        ['dexId_native_denom2', new Set(['dexId_native_denom'])],
-        ['dexId_token_addr', new Set(['dexId_native_denom'])],
+        ['dexId:native_denom2', new Set(['dexId:native_denom'])],
+        ['dexId:token_addr', new Set(['dexId:native_denom'])],
       ])
     })
 
@@ -150,16 +150,159 @@ describe('graph', () => {
 
       expect([...graph.entries()]).toEqual([
         [
-          'dexId_native_denom',
-          new Set(['dexId_native_denom2', 'dexId2_native_denom']),
+          'dexId:native_denom',
+          new Set(['dexId:native_denom2', 'dexId2:native_denom']),
         ],
-        ['dexId_native_denom2', new Set(['dexId_native_denom'])],
+        ['dexId:native_denom2', new Set(['dexId:native_denom'])],
         [
-          'dexId2_native_denom',
-          new Set(['dexId2_token_addr', 'dexId_native_denom']),
+          'dexId2:native_denom',
+          new Set(['dexId2:token_addr', 'dexId:native_denom']),
         ],
-        ['dexId2_token_addr', new Set(['dexId2_native_denom'])],
+        ['dexId2:token_addr', new Set(['dexId2:native_denom'])],
       ])
     })
+  })
+
+  describe('findPaths', () => {
+    it('finds single pair path', () => {
+      const graph = new Map([
+        ['dexId:native_denom', new Set(['dexId:native_denom2'])],
+        ['dexId:native_denom2', new Set(['dexId:native_denom'])],
+      ])
+
+      const result = findPaths(
+        graph,
+        new Set(['dexId:native_denom']),
+        new Set(['dexId:native_denom2']),
+        5,
+      )
+
+      expect([...result]).toEqual([
+        ['dexId:native_denom', 'dexId:native_denom2'],
+      ])
+    })
+
+    it('finds nothing', () => {
+      const graph = new Map([
+        ['dexId:native_denom', new Set(['dexId:native_denom2'])],
+        ['dexId:native_denom2', new Set(['dexId:native_denom'])],
+      ])
+
+      const result = findPaths(
+        graph,
+        new Set(['dexId:native_denom']),
+        new Set(['dexId:nonexisting_addr']),
+        5,
+      )
+
+      expect([...result]).toEqual([])
+    })
+  })
+
+  it('finds multiple paths for single pair', () => {
+    const graph = new Map([
+      ['dexId:A', new Set(['dexId:B', 'dexId:C'])],
+      ['dexId:B', new Set(['dexId:A', 'dexId:C'])],
+      ['dexId:C', new Set(['dexId:A', 'dexId:B'])],
+    ])
+
+    const result = [
+      ...findPaths(graph, new Set(['dexId:A']), new Set(['dexId:C']), 3),
+    ]
+
+    expect(result).toEqual(
+      expect.arrayContaining([
+        ['dexId:A', 'dexId:B', 'dexId:C'],
+        ['dexId:A', 'dexId:C'],
+        ['dexId:A', 'dexId:B', 'dexId:A', 'dexId:C'],
+        ['dexId:A', 'dexId:C', 'dexId:B', 'dexId:C'],
+      ]),
+    )
+    expect(result).toHaveLength(4)
+  })
+
+  it('finds path single pair with cycle', () => {
+    const graph = new Map([
+      ['dexId:A', new Set(['dexId:A', 'dexId:B'])],
+      ['dexId:B', new Set(['dexId:A', 'dexId:B'])],
+    ])
+
+    const result = [
+      ...findPaths(graph, new Set(['dexId:A']), new Set(['dexId:B']), 5),
+    ]
+
+    expect(result).toEqual(expect.arrayContaining([['dexId:A', 'dexId:B']]))
+    expect(result).toHaveLength(1)
+  })
+
+  it('finds single pair where start is also target', () => {
+    const graph = new Map([
+      ['dexId:A', new Set(['dexId:A', 'dexId:B'])],
+      ['dexId:B', new Set(['dexId:A', 'dexId:B'])],
+    ])
+
+    const result = [
+      ...findPaths(
+        graph,
+        new Set(['dexId:A', 'dexId:B']),
+        new Set(['dexId:B']),
+        5,
+      ),
+    ]
+
+    expect(result).toEqual(expect.arrayContaining([['dexId:A', 'dexId:B']]))
+    expect(result).toHaveLength(1)
+  })
+
+  it('finds pairs multiple from and multiple to', () => {
+    const graph = new Map([
+      ['dexId:A', new Set(['dexId:B', 'dexId2:A'])],
+      ['dexId:B', new Set(['dexId:A', 'dexId2:B'])],
+      ['dexId2:A', new Set(['dexId2:B', 'dexId:A'])],
+      ['dexId2:B', new Set(['dexId2:A', 'dexId:B'])],
+    ])
+
+    const result = [
+      ...findPaths(
+        graph,
+        new Set(['dexId:A', 'dexId2:A']),
+        new Set(['dexId:B', 'dexId2:B']),
+        2,
+      ),
+    ]
+
+    expect(result).toEqual(
+      expect.arrayContaining([
+        ['dexId:A', 'dexId:B'],
+        ['dexId2:A', 'dexId2:B'],
+      ]),
+    )
+    expect(result).toHaveLength(2)
+  })
+
+  it('finds routes with whitelisted', () => {
+    const graph = new Map([
+      ['dexId:A', new Set(['dexId:B', 'dexId:C'])],
+      ['dexId:B', new Set(['dexId:A', 'dexId:C'])],
+      ['dexId:C', new Set(['dexId:B', 'dexId:A'])],
+    ])
+
+    const result = [
+      ...findPaths(
+        graph,
+        new Set(['dexId:A', 'dexId:B']),
+        new Set(['dexId:C']),
+        5,
+        new Set([]),
+      ),
+    ]
+
+    expect(result).toEqual(
+      expect.arrayContaining([
+        ['dexId:A', 'dexId:C'],
+        ['dexId:B', 'dexId:C'],
+      ]),
+    )
+    expect(result).toHaveLength(2)
   })
 })

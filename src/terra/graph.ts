@@ -1,8 +1,18 @@
 import { DEX, Graph, GraphAssetNode, GraphAssetNodeId } from '../types/terra.js'
 import { getDenom } from './lib.js'
 
+export function decodeGraphNodeId(graphNodeId: GraphAssetNodeId) {
+  const result = graphNodeId.split(':')
+
+  if (result.length !== 2) {
+    throw new Error(`graphNodeId ${graphNodeId} can't be parsed`)
+  }
+
+  return result
+}
+
 export function formatGraphNodeId(dexId: string, denom: string) {
-  return `${dexId}_${denom}`
+  return `${dexId}:${denom}`
 }
 
 export function generateGraphNodeId(node: GraphAssetNode): GraphAssetNodeId {
@@ -58,4 +68,74 @@ export function createGraph(pairs: [GraphAssetNode, GraphAssetNode][]) {
   }
 
   return graph
+}
+
+export function* findPaths(
+  graph: Graph,
+  from: Set<GraphAssetNodeId>,
+  to: Set<GraphAssetNodeId>,
+  maxHops: number,
+  whitelisted?: Set<GraphAssetNodeId>,
+) {
+  const toVisit = [...from]
+  const paths: GraphAssetNodeId[][] = toVisit.map(() => [])
+  const edges_names: string[][] = toVisit.map(() => [])
+
+  while (toVisit.length > 0 && paths.length > 0) {
+    const node = toVisit.shift() as GraphAssetNodeId
+    let edges_name = edges_names.shift() as string[]
+    let path = paths.shift() as string[]
+    const previous = path[path.length - 1]
+    const edge = previous ? previous + '::' + node : null
+    const [, nodeDenom] = decodeGraphNodeId(node)
+
+    path = [...path, node]
+
+    if (edge) {
+      edges_name = [...edges_name, edge]
+    }
+
+    if (to.has(node)) {
+      if (!previous) {
+        continue
+      }
+      const [, previousDenom] = decodeGraphNodeId(previous)
+
+      if (previousDenom !== nodeDenom) {
+        yield path
+      }
+    }
+
+    if (whitelisted && !whitelisted.has(node) && path.length > 1) {
+      continue
+    }
+
+    if (path.length - 1 >= maxHops) {
+      continue
+    }
+
+    const neighbours = graph.get(node) || new Set()
+
+    for (const neighbour of neighbours) {
+      if (node === neighbour) {
+        continue
+      }
+
+      const [, neighbourDenom] = decodeGraphNodeId(neighbour)
+
+      if (path.length === 1) {
+        if (neighbourDenom === nodeDenom) {
+          continue
+        }
+      }
+
+      if (edges_name.filter((e) => e === node + '::' + neighbour).length >= 1) {
+        continue
+      }
+
+      edges_names.push(edges_name)
+      toVisit.push(neighbour)
+      paths.push(path)
+    }
+  }
 }
