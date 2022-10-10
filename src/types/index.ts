@@ -1,1 +1,1 @@
-export * from './foo.js'
+export * from './terra.js'

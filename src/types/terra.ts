@@ -39,4 +39,18 @@ export type NativeToken = {
   denom: string
 }
 
-export type Graph = Map<string, Set<string>>
+export type DEX = {
+  id: string
+  label?: string
+  factory: string
+  router: string
+  swapName: string
+}
+
+export type GraphAssetNode = {
+  dexId: DEX['id']
+  assetInfo: AssetInfo
+}
+
+export type GraphAssetNodeId = string
+export type Graph = Map<GraphAssetNodeId, Set<GraphAssetNodeId>>
