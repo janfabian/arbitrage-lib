@@ -1,7 +1,26 @@
 import { GraphAssetNode } from '../types/terra.js'
-import { createGraph, findPaths, generateGraphNodeId } from './graph.js'
+import {
+  createGraph,
+  decodeGraphNodeId,
+  findPaths,
+  generateGraphNodeId,
+} from './graph.js'
 
 describe('graph', () => {
+  describe('decodeGraphNodeId', () => {
+    it('throws error if invalid nodeid', () => {
+      expect(() => decodeGraphNodeId('invalidNodeId')).toThrowError()
+    })
+
+    it('throws error if invalid nodeid', () => {
+      expect(() => decodeGraphNodeId('invalidNodeId:foo:bar')).toThrowError()
+    })
+
+    it('decode nodeid', () => {
+      expect(decodeGraphNodeId('dexId:valid')).toEqual(['dexId', 'valid'])
+    })
+  })
+
   describe('generateGraphNodeId', () => {
     it('native asset', () => {
       const obj: GraphAssetNode = {
@@ -225,6 +244,20 @@ describe('graph', () => {
     const graph = new Map([
       ['dexId:A', new Set(['dexId:A', 'dexId:B'])],
       ['dexId:B', new Set(['dexId:A', 'dexId:B'])],
+    ])
+
+    const result = [
+      ...findPaths(graph, new Set(['dexId:A']), new Set(['dexId:B']), 5),
+    ]
+
+    expect(result).toEqual(expect.arrayContaining([['dexId:A', 'dexId:B']]))
+    expect(result).toHaveLength(1)
+  })
+
+  it('finds path single pair with dead-end', () => {
+    const graph = new Map([
+      ['dexId:A', new Set(['dexId:B', 'dexId:C'])],
+      ['dexId:B', new Set(['dexId:A', 'dexId:C'])],
     ])
 
     const result = [
