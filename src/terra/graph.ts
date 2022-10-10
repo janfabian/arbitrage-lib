@@ -1,34 +1,61 @@
-import { GraphAssetNode, GraphAssetNodeId } from '../types/terra.js'
+import { DEX, Graph, GraphAssetNode, GraphAssetNodeId } from '../types/terra.js'
 import { getDenom } from './lib.js'
 
-export function generateGraphNodeId(node: GraphAssetNode): GraphAssetNodeId {
-  return `${node.dexId}_${getDenom(node.assetInfo)}`
+export function formatGraphNodeId(dexId: string, denom: string) {
+  return `${dexId}_${denom}`
 }
 
-// export function createGraph(pairs: Pair[]) {
-//   const graph: Graph = new Map()
+export function generateGraphNodeId(node: GraphAssetNode): GraphAssetNodeId {
+  return formatGraphNodeId(node.dexId, getDenom(node.assetInfo))
+}
 
-//   pairs.forEach((p) => {
-//     const token1 =
-//       p.asset_infos?.[0]?.token?.contract_addr ||
-//       p.asset_infos?.[0]?.native_token?.denom
+export function createGraph(pairs: [GraphAssetNode, GraphAssetNode][]) {
+  function addToSetInMap(
+    map: Map<string, Set<string>>,
+    key: string,
+    value: string,
+  ) {
+    const setItem = map.get(key) || new Set<string>()
+    setItem.add(value)
+    map.set(key, setItem)
+  }
 
-//     const token2 =
-//       p.asset_infos?.[1]?.token?.contract_addr ||
-//       p.asset_infos?.[1]?.native_token?.denom
+  const graph: Graph = new Map()
 
-//     if (!token1 || !token2) {
-//       return
-//     }
+  // Add connection between assets on the same DEX
+  pairs.forEach((pair) => {
+    const asset1Id = generateGraphNodeId(pair[0])
+    const asset2Id = generateGraphNodeId(pair[1])
 
-//     const token1Neighbours = graph.get(token1) || new Set<string>()
-//     token1Neighbours.add(token2)
-//     graph.set(token1, token1Neighbours)
+    addToSetInMap(graph, asset1Id, asset2Id)
+    addToSetInMap(graph, asset2Id, asset1Id)
+  })
 
-//     const token2Neighbours = graph.get(token2) || new Set<string>()
-//     token2Neighbours.add(token1)
-//     graph.set(token2, token2Neighbours)
-//   })
+  const assetDex: Map<string, Set<DEX['id']>> = new Map()
+  pairs.forEach((pair) => {
+    pair.forEach((assetNode) => {
+      const denom = getDenom(assetNode.assetInfo)
+      const dexId = assetNode.dexId
 
-//   return graph
-// }
+      addToSetInMap(assetDex, denom, dexId)
+    })
+  })
+
+  for (const [denom, dexes] of assetDex.entries()) {
+    for (const dexFrom of dexes) {
+      for (const dexTarget of dexes) {
+        if (dexFrom === dexTarget) {
+          continue
+        }
+
+        const asset1Id = formatGraphNodeId(dexFrom, denom)
+        const asset2Id = formatGraphNodeId(dexTarget, denom)
+
+        addToSetInMap(graph, asset1Id, asset2Id)
+        addToSetInMap(graph, asset2Id, asset1Id)
+      }
+    }
+  }
+
+  return graph
+}
