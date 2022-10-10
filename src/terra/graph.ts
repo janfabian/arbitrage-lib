@@ -11,12 +11,12 @@ export function decodeGraphNodeId(graphNodeId: GraphAssetNodeId) {
   return result
 }
 
-export function formatGraphNodeId(dexId: string, denom: string) {
+export function encodeGraphNodeId(dexId: string, denom: string) {
   return `${dexId}:${denom}`
 }
 
 export function generateGraphNodeId(node: GraphAssetNode): GraphAssetNodeId {
-  return formatGraphNodeId(node.dexId, getDenom(node.assetInfo))
+  return encodeGraphNodeId(node.dexId, getDenom(node.assetInfo))
 }
 
 export function createGraph(pairs: [GraphAssetNode, GraphAssetNode][]) {
@@ -58,8 +58,8 @@ export function createGraph(pairs: [GraphAssetNode, GraphAssetNode][]) {
           continue
         }
 
-        const asset1Id = formatGraphNodeId(dexFrom, denom)
-        const asset2Id = formatGraphNodeId(dexTarget, denom)
+        const asset1Id = encodeGraphNodeId(dexFrom, denom)
+        const asset2Id = encodeGraphNodeId(dexTarget, denom)
 
         addToSetInMap(graph, asset1Id, asset2Id)
         addToSetInMap(graph, asset2Id, asset1Id)
@@ -68,6 +68,13 @@ export function createGraph(pairs: [GraphAssetNode, GraphAssetNode][]) {
   }
 
   return graph
+}
+
+export function encodeGraphEdge(
+  previous: GraphAssetNodeId,
+  current: GraphAssetNodeId,
+) {
+  return `${previous}::${current}`
 }
 
 export function* findPaths(
@@ -83,31 +90,28 @@ export function* findPaths(
 
   while (toVisit.length > 0 && paths.length > 0) {
     const node = toVisit.shift() as GraphAssetNodeId
+    const [, nodeDenom] = decodeGraphNodeId(node)
     let edges_name = edges_names.shift() as string[]
     let path = paths.shift() as string[]
-    const previous = path[path.length - 1]
-    const edge = previous ? previous + '::' + node : null
-    const [, nodeDenom] = decodeGraphNodeId(node)
 
     path = [...path, node]
 
-    if (edge) {
-      edges_name = [...edges_name, edge]
-    }
+    if (path.length > 1) {
+      const previous = path[path.length - 2]
+      const [, previousDenom] = decodeGraphNodeId(previous)
+      const edge = encodeGraphEdge(previous, node)
 
-    if (to.has(node)) {
-      if (!previous) {
+      edges_name = [...edges_name, edge]
+
+      if (to.has(node)) {
+        if (previousDenom !== nodeDenom) {
+          yield path
+        }
+      }
+
+      if (whitelisted && !whitelisted.has(node)) {
         continue
       }
-      const [, previousDenom] = decodeGraphNodeId(previous)
-
-      if (previousDenom !== nodeDenom) {
-        yield path
-      }
-    }
-
-    if (whitelisted && !whitelisted.has(node) && path.length > 1) {
-      continue
     }
 
     if (path.length - 1 >= maxHops) {
@@ -129,7 +133,7 @@ export function* findPaths(
         }
       }
 
-      if (edges_name.filter((e) => e === node + '::' + neighbour).length >= 1) {
+      if (edges_name.includes(encodeGraphEdge(node, neighbour))) {
         continue
       }
 

@@ -250,8 +250,13 @@ describe('graph', () => {
       ),
     ]
 
-    expect(result).toEqual(expect.arrayContaining([['dexId:A', 'dexId:B']]))
-    expect(result).toHaveLength(1)
+    expect(result).toEqual(
+      expect.arrayContaining([
+        ['dexId:A', 'dexId:B'],
+        ['dexId:B', 'dexId:A', 'dexId:B'],
+      ]),
+    )
+    expect(result).toHaveLength(2)
   })
 
   it('finds pairs multiple from and multiple to', () => {
