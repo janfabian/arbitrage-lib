@@ -1,4 +1,11 @@
-import { DEX, Graph, GraphAssetNode, GraphAssetNodeId } from '../types/terra.js'
+import {
+  DEX,
+  Graph,
+  GraphAssetNode,
+  GraphAssetNodeId,
+  GraphAssetNodeMap,
+  SwapOperation,
+} from '../types/terra.js'
 import { getDenom } from './lib.js'
 
 export function decodeGraphNodeId(graphNodeId: GraphAssetNodeId) {
@@ -16,7 +23,7 @@ export function encodeGraphNodeId(dexId: string, denom: string) {
 }
 
 export function generateGraphNodeId(node: GraphAssetNode): GraphAssetNodeId {
-  return encodeGraphNodeId(node.dexId, getDenom(node.assetInfo))
+  return encodeGraphNodeId(node.dex.id, getDenom(node.assetInfo))
 }
 
 export function createGraph(pairs: [GraphAssetNode, GraphAssetNode][]) {
@@ -45,7 +52,7 @@ export function createGraph(pairs: [GraphAssetNode, GraphAssetNode][]) {
   pairs.forEach((pair) => {
     pair.forEach((assetNode) => {
       const denom = getDenom(assetNode.assetInfo)
-      const dexId = assetNode.dexId
+      const dexId = assetNode.dex.id
 
       addToSetInMap(assetDex, denom, dexId)
     })
@@ -90,7 +97,7 @@ export function* findPaths(
   while (toVisit.length > 0 && paths.length > 0) {
     const node = toVisit.shift() as GraphAssetNodeId
     const [, nodeDenom] = decodeGraphNodeId(node)
-    let path = paths.shift() as string[]
+    let path = paths.shift() as GraphAssetNodeId[]
 
     path = [...path, node]
     let edges: string[] = []
@@ -143,4 +150,51 @@ export function* findPaths(
       paths.push(path)
     }
   }
+}
+
+export function swapOpsFromPath(
+  path: GraphAssetNodeId[],
+  assetMap: GraphAssetNodeMap,
+): SwapOperation[] {
+  const ops = path
+    .map((_node, ix) => path.slice(ix, ix + 2))
+    .slice(0, -1)
+    .map((hop) => {
+      const offer = assetMap[hop[0]]
+      const ask = assetMap[hop[1]]
+
+      if (!offer) {
+        throw new Error(`Missing offer asset in map ${hop[0]}`)
+      }
+
+      if (!ask) {
+        throw new Error(`Missing ask asset in map ${hop[1]}`)
+      }
+
+      return {
+        offer,
+        ask,
+      }
+    })
+
+  const result: SwapOperation[] = []
+
+  for (const op of ops) {
+    if (op.offer.dex.id === op.ask.dex.id) {
+      result.push(op)
+      continue
+    }
+
+    if (getDenom(op.offer.assetInfo) !== getDenom(op.ask.assetInfo)) {
+      throw new Error('Unsupported cross DEX swap')
+    }
+
+    if (result.length < 1) {
+      throw new Error('Cant route an operation if theres not any previous')
+    }
+
+    result[result.length - 1].to = op.ask.dex.router
+  }
+
+  return result
 }

@@ -5,6 +5,12 @@ export type Pair = {
   pair_type: PairTypeRaw
 }
 
+export type SwapOperation = {
+  offer: GraphAssetNode
+  ask: GraphAssetNode
+  to?: DEX['router']
+}
+
 export type PairTypeRaw = Omit<PairType, 'kind'>
 export type PairType = PairTypeXyk | PairTypeStable
 
@@ -47,8 +53,12 @@ export type DEX = {
   swapName: string
 }
 
+export type GraphAssetNodeMap = {
+  [key: GraphAssetNodeId]: GraphAssetNode
+}
+
 export type GraphAssetNode = {
-  dexId: DEX['id']
+  dex: DEX
   assetInfo: AssetInfo
 }
 
