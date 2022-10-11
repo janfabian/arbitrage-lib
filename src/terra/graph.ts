@@ -93,12 +93,12 @@ export function* findPaths(
     let path = paths.shift() as string[]
 
     path = [...path, node]
-    let edges_name: string[] = []
+    let edges: string[] = []
 
     if (path.length > 1) {
       const previous = path[path.length - 2]
       const [, previousDenom] = decodeGraphNodeId(previous)
-      edges_name = path
+      edges = path
         .reduce(
           (acc, node, ix) => acc.concat(encodeGraphEdge(node, path[ix + 1])),
           [] as string[],
@@ -135,7 +135,7 @@ export function* findPaths(
         }
       }
 
-      if (edges_name.includes(encodeGraphEdge(node, neighbour))) {
+      if (edges.includes(encodeGraphEdge(node, neighbour))) {
         continue
       }
 
