@@ -5,7 +5,7 @@ import {
   GraphAssetNodeId,
   GraphAssetNodeMap,
   SwapOperation,
-} from '../types/terra.js'
+} from '../types/cosm.js'
 import { getDenom } from './lib.js'
 
 export function decodeGraphNodeId(graphNodeId: GraphAssetNodeId) {

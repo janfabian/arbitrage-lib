@@ -1,4 +1,4 @@
-import { DEX, GraphAssetNode, GraphAssetNodeMap } from '../types/terra.js'
+import { DEX, GraphAssetNode, GraphAssetNodeMap } from '../types/cosm.js'
 import {
   createGraph,
   decodeGraphNodeId,

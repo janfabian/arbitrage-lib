@@ -1,4 +1,4 @@
-import { AssetInfoNative, AssetInfoToken } from '../types/terra.js'
+import { AssetInfoNative, AssetInfoToken } from '../types/cosm.js'
 import { getDenom, toRaw } from './lib.js'
 
 describe('lib', () => {

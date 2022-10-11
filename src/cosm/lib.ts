@@ -1,4 +1,4 @@
-import { AssetInfo } from '../types/terra.js'
+import { AssetInfo } from '../types/cosm.js'
 
 export function toRaw<K>(obj: any): K {
   delete obj.kind
