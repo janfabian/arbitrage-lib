@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0] - 2022-10-11
+### :sparkles: New Features
+- [`42c0676`](https://github.com/janfabian/arbitrage-lib/commit/42c067638c7bb4ee08d2904223441a8bacd99687) - swap ops *(commit by [@janfabian](https://github.com/janfabian))*
+
+### :recycle: Refactors
+- [`b740520`](https://github.com/janfabian/arbitrage-lib/commit/b740520967de017acb1bd5171c63c450f2de534c) - rename terra to cosm *(commit by [@janfabian](https://github.com/janfabian))*
+
+### :boom: BREAKING CHANGES
+- due to [`b740520`](https://github.com/janfabian/arbitrage-lib/commit/b740520967de017acb1bd5171c63c450f2de534c) - rename terra to cosm *(commit by [@janfabian](https://github.com/janfabian))*:
+
+  rename terra to cosm
+
+
 ## [0.2.3] - 2022-10-11
 ### :recycle: Refactors
 - [`7a3b7e6`](https://github.com/janfabian/arbitrage-lib/commit/7a3b7e655b661930407ba55eb442742970fd24ba) - clean *(commit by [@janfabian](https://github.com/janfabian))*
@@ -49,3 +62,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.2.1]: https://github.com/janfabian/arbitrage-lib/compare/0.2.0...0.2.1
 [0.2.2]: https://github.com/janfabian/arbitrage-lib/compare/0.2.1...0.2.2
 [0.2.3]: https://github.com/janfabian/arbitrage-lib/compare/0.2.2...0.2.3
+[1.0.0]: https://github.com/janfabian/arbitrage-lib/compare/0.2.3...1.0.0
