@@ -112,10 +112,8 @@ export function* findPaths(
         )
         .slice(0, -1)
 
-      if (to.has(node)) {
-        if (previousDenom !== nodeDenom) {
-          yield path
-        }
+      if (to.has(node) && previousDenom !== nodeDenom) {
+        yield path
       }
 
       if (whitelisted && !whitelisted.has(node)) {
@@ -136,10 +134,8 @@ export function* findPaths(
 
       const [, neighbourDenom] = decodeGraphNodeId(neighbour)
 
-      if (path.length === 1) {
-        if (neighbourDenom === nodeDenom) {
-          continue
-        }
+      if (path.length === 1 && neighbourDenom === nodeDenom) {
+        continue
       }
 
       if (edges.includes(encodeGraphEdge(node, neighbour))) {
