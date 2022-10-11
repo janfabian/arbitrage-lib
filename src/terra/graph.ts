@@ -86,22 +86,24 @@ export function* findPaths(
 ) {
   const toVisit = [...from]
   const paths: GraphAssetNodeId[][] = toVisit.map(() => [])
-  const edges_names: string[][] = toVisit.map(() => [])
 
   while (toVisit.length > 0 && paths.length > 0) {
     const node = toVisit.shift() as GraphAssetNodeId
     const [, nodeDenom] = decodeGraphNodeId(node)
-    let edges_name = edges_names.shift() as string[]
     let path = paths.shift() as string[]
 
     path = [...path, node]
+    let edges_name: string[] = []
 
     if (path.length > 1) {
       const previous = path[path.length - 2]
       const [, previousDenom] = decodeGraphNodeId(previous)
-      const edge = encodeGraphEdge(previous, node)
-
-      edges_name = [...edges_name, edge]
+      edges_name = path
+        .reduce(
+          (acc, node, ix) => acc.concat(encodeGraphEdge(node, path[ix + 1])),
+          [] as string[],
+        )
+        .slice(0, -1)
 
       if (to.has(node)) {
         if (previousDenom !== nodeDenom) {
@@ -137,7 +139,6 @@ export function* findPaths(
         continue
       }
 
-      edges_names.push(edges_name)
       toVisit.push(neighbour)
       paths.push(path)
     }
