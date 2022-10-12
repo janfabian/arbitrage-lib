@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2022-10-12
+### :sparkles: New Features
+- [`00240c6`](https://github.com/janfabian/arbitrage-lib/commit/00240c6636102c8be2c28c3b814313aaa8bc74bc) - toBinary *(commit by [@janfabian](https://github.com/janfabian))*
+- [`dfeb4ec`](https://github.com/janfabian/arbitrage-lib/commit/dfeb4ec35e802313a3a9914fb30a34aa12cff83c) - export subpath *(commit by [@janfabian](https://github.com/janfabian))*
+
+### :bug: Bug Fixes
+- [`b243285`](https://github.com/janfabian/arbitrage-lib/commit/b24328586b1fd20e4c015ec3bd4ba227e327909a) - unused imports *(commit by [@janfabian](https://github.com/janfabian))*
+
+
 ## [1.0.6] - 2022-10-12
 ### :recycle: Refactors
 - [`165ec87`](https://github.com/janfabian/arbitrage-lib/commit/165ec87e42d9e5bb1f6a3834dccf4adb50cb5d0f) - split swap op code *(commit by [@janfabian](https://github.com/janfabian))*
@@ -81,3 +90,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.0.3]: https://github.com/janfabian/arbitrage-lib/compare/1.0.2...1.0.3
 [1.0.5]: https://github.com/janfabian/arbitrage-lib/compare/1.0.4...1.0.5
 [1.0.6]: https://github.com/janfabian/arbitrage-lib/compare/1.0.5...1.0.6
+[1.1.0]: https://github.com/janfabian/arbitrage-lib/compare/1.0.6...1.1.0
