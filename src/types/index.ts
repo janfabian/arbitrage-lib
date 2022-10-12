@@ -1,1 +1,1 @@
-export * from './cosm.js'
+export * as cosm from './cosm.js'

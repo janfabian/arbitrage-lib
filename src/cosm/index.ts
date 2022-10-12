@@ -1,2 +1,2 @@
-export * as graph from './graph.js'
-export * as lib from './lib.js'
+export * from './graph.js'
+export * from './lib.js'
