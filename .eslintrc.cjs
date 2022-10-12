@@ -12,4 +12,12 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
+  overrides: [
+    {
+      files: ['**/*.test.ts'],
+      rules: {
+        'sonarjs/no-duplicate-string': 0,
+      },
+    },
+  ],
 }
