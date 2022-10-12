@@ -4,7 +4,7 @@ import {
   DEX,
   GraphAssetNodeMap,
 } from '../types/cosm.js'
-import { getDenom, swapOpsFromPath, toRaw } from './lib.js'
+import { getDenom, swapOpsFromPath, toBinary, toRaw } from './lib.js'
 
 const dex1: DEX = {
   id: 'dexId',
@@ -253,6 +253,15 @@ describe('lib', () => {
       }
 
       expect(() => swapOpsFromPath(path, assetMap)).toThrowError()
+    })
+  })
+
+  describe('toBinary', () => {
+    it('converts object to binary', () => {
+      const obj = { a: 1 }
+      const result = toBinary(obj)
+
+      expect(result).toBe('eyJhIjoxfQ==')
     })
   })
 })

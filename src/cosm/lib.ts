@@ -72,3 +72,7 @@ export function swapOpsFromPath(
 
   return result
 }
+
+export function toBinary(msg: any) {
+  return Buffer.from(JSON.stringify(msg)).toString('base64')
+}
