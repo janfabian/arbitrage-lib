@@ -105,6 +105,7 @@ export function* findPaths(
     const node = toVisit.shift() as GraphAssetNodeId
     const [, nodeDenom] = decodeGraphNodeId(node)
     let path = paths.shift() as GraphAssetNodeId[]
+    let lastOpDexMove = false
 
     path = [...path, node]
     let edges: string[] = []
@@ -112,6 +113,8 @@ export function* findPaths(
     if (path.length > 1) {
       const previous = path[path.length - 2]
       const [, previousDenom] = decodeGraphNodeId(previous)
+      lastOpDexMove = previousDenom === nodeDenom
+
       edges = path
         .reduce(
           (acc, node, ix) => acc.concat(encodeGraphEdge(node, path[ix + 1])),
@@ -119,7 +122,7 @@ export function* findPaths(
         )
         .slice(0, -1)
 
-      if (to.has(node) && previousDenom !== nodeDenom) {
+      if (to.has(node) && !lastOpDexMove) {
         yield path
       }
 
@@ -141,7 +144,10 @@ export function* findPaths(
 
       const [, neighbourDenom] = decodeGraphNodeId(neighbour)
 
-      if (path.length === 1 && neighbourDenom === nodeDenom) {
+      if (
+        neighbourDenom === nodeDenom &&
+        (path.length === 1 || lastOpDexMove)
+      ) {
         continue
       }
 

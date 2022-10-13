@@ -363,6 +363,29 @@ describe('graph', () => {
       expect(result).toHaveLength(2)
     })
 
+    it('finds pairs multiple dexes', () => {
+      const graph = new Map([
+        ['dexId:A', new Set(['dexId3:A', 'dexId:B', 'dexId2:A'])],
+        ['dexId:B', new Set(['dexId3:B', 'dexId:A', 'dexId2:B', 'dexId:C'])],
+        ['dexId:C', new Set(['dexId3:C', 'dexId:B', 'dexId2:C'])],
+        ['dexId2:A', new Set(['dexId3:A', 'dexId2:B', 'dexId:A'])],
+        ['dexId2:B', new Set(['dexId3:B', 'dexId2:A', 'dexId:B', 'dexId2:C'])],
+        ['dexId2:C', new Set(['dexId3:C', 'dexId2:B', 'dexId:C'])],
+        ['dexId3:A', new Set(['dexId3:B', 'dexId2:B', 'dexId:A'])],
+        ['dexId3:B', new Set(['dexId3:A', 'dexId2:B', 'dexId:B', 'dexId3:C'])],
+        ['dexId3:C', new Set(['dexId3:B', 'dexId2:C', 'dexId:C'])],
+      ])
+
+      const result = [
+        ...findPaths(graph, new Set(['dexId:A']), new Set(['dexId:C']), 2),
+      ]
+
+      expect(result).toEqual(
+        expect.arrayContaining([['dexId:A', 'dexId:B', 'dexId:C']]),
+      )
+      expect(result).toHaveLength(1)
+    })
+
     it('finds routes with whitelisted', () => {
       const graph = new Map([
         ['dexId:A', new Set(['dexId:B', 'dexId:C'])],
