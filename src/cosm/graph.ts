@@ -77,6 +77,20 @@ export function encodeGraphEdge(
   return `${previous}::${current}`
 }
 
+export function getPathLength(path: GraphAssetNodeId[]): number {
+  return path.reduce((l, node, ix) => {
+    const previous = path[ix - 1]
+    if (!previous) {
+      return l
+    }
+
+    const [, previousDenom] = decodeGraphNodeId(previous)
+    const [, denom] = decodeGraphNodeId(node)
+
+    return previousDenom === denom ? l : l + 1
+  }, 0)
+}
+
 export function* findPaths(
   graph: Graph,
   from: Set<GraphAssetNodeId>,
@@ -114,7 +128,7 @@ export function* findPaths(
       }
     }
 
-    if (path.length - 1 >= maxHops) {
+    if (getPathLength(path) >= maxHops) {
       continue
     }
 

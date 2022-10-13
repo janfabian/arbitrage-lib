@@ -4,6 +4,7 @@ import {
   decodeGraphNodeId,
   findPaths,
   generateGraphNodeId,
+  getPathLength,
 } from './graph.js'
 
 const dex1: DEX = {
@@ -195,6 +196,35 @@ describe('graph', () => {
         ],
         ['dexId2:token_addr', new Set(['dexId2:native_denom'])],
       ])
+    })
+  })
+
+  describe('getPathLength', () => {
+    it('empty', () => {
+      const path = []
+      expect(getPathLength(path)).toBe(0)
+    })
+
+    it('returns number of hops', () => {
+      const path = ['dexId:A', 'dexId:B', 'dexId:C']
+      expect(getPathLength(path)).toBe(2)
+    })
+
+    it('returns number of hops with multiple dexes', () => {
+      const path = ['dexId:A', 'dexId:B', 'dexId2:B', 'dexId2:C']
+      expect(getPathLength(path)).toBe(2)
+    })
+
+    it('returns number of hops with multiple dexes 2', () => {
+      const path = [
+        'dexId:A',
+        'dexId:B',
+        'dexId2:B',
+        'dexId2:C',
+        'dexId3:C',
+        'dexId3:D',
+      ]
+      expect(getPathLength(path)).toBe(3)
     })
   })
 
