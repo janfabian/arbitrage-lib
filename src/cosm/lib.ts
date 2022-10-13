@@ -1,7 +1,11 @@
 import {
   AssetInfo,
+  AssetInfoNative,
+  AssetInfoToken,
   GraphAssetNodeId,
   GraphAssetNodeMap,
+  PairTypeStable,
+  PairTypeXyk,
   SwapOperation,
 } from '../types/cosm.js'
 
@@ -9,6 +13,38 @@ export function toRaw<K>(obj: any): K {
   delete obj.kind
 
   return obj
+}
+
+export function toKindPairType(pairTypeRaw: any) {
+  if (pairTypeRaw.xyk) {
+    return {
+      kind: 'xyk',
+      ...pairTypeRaw,
+    } as PairTypeXyk
+  }
+
+  if (pairTypeRaw.stable) {
+    return {
+      kind: 'stable',
+      ...pairTypeRaw,
+    } as PairTypeStable
+  }
+}
+
+export function toKindAssetInto(assetInfo: any) {
+  if (assetInfo.token) {
+    return {
+      kind: 'token',
+      ...assetInfo,
+    } as AssetInfoToken
+  }
+
+  if (assetInfo.native_token) {
+    return {
+      kind: 'native',
+      ...assetInfo,
+    } as AssetInfoNative
+  }
 }
 
 export function getDenom(assetInfo: AssetInfo) {

@@ -4,7 +4,14 @@ import {
   DEX,
   GraphAssetNodeMap,
 } from '../types/cosm.js'
-import { getDenom, swapOpsFromPath, toBinary, toRaw } from './lib.js'
+import {
+  getDenom,
+  swapOpsFromPath,
+  toBinary,
+  toKindAssetInto,
+  toKindPairType,
+  toRaw,
+} from './lib.js'
 
 const dex1: DEX = {
   id: 'dexId',
@@ -34,6 +41,37 @@ describe('lib', () => {
 
       expect(result).not.toHaveProperty('kind')
       expect(result).toHaveProperty('attr', 1)
+    })
+  })
+
+  describe('toKindPairType', () => {
+    it('returns xyk pairtype', () => {
+      const xyk = { foo: 'bar' }
+      const result = toKindPairType({ xyk: xyk })
+      expect(result).toHaveProperty('kind', 'xyk')
+      expect(result).toHaveProperty('xyk', xyk)
+    })
+    it('returns stable pairtype', () => {
+      const stable = { foo: 'bar' }
+      const result = toKindPairType({ stable: stable })
+      expect(result).toHaveProperty('kind', 'stable')
+      expect(result).toHaveProperty('stable', stable)
+    })
+  })
+
+  describe('toKindAssetInto', () => {
+    it('returns token', () => {
+      const token = { foo: 'bar' }
+      const result = toKindAssetInto({ token: token })
+      expect(result).toHaveProperty('kind', 'token')
+      expect(result).toHaveProperty('token', token)
+    })
+
+    it('returns native', () => {
+      const native_token = { foo: 'bar' }
+      const result = toKindAssetInto({ native_token: native_token })
+      expect(result).toHaveProperty('kind', 'native')
+      expect(result).toHaveProperty('native_token', native_token)
     })
   })
 
