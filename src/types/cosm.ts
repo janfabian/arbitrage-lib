@@ -5,6 +5,13 @@ export type Pair = {
   pair_type: PairTypeRaw
 }
 
+export type SimulateOperation = {
+  [k: string]: {
+    offer_asset_info: AssetInfoRaw
+    ask_asset_info: AssetInfoRaw
+  }
+}
+
 export type SwapOperation = {
   offer: GraphAssetNode
   ask: GraphAssetNode

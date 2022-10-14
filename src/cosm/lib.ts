@@ -1,11 +1,14 @@
+import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import {
   AssetInfo,
   AssetInfoNative,
+  AssetInfoRaw,
   AssetInfoToken,
   GraphAssetNodeId,
   GraphAssetNodeMap,
   PairTypeStable,
   PairTypeXyk,
+  SimulateOperation,
   SwapOperation,
 } from '../types/cosm.js'
 
@@ -111,4 +114,32 @@ export function swapOpsFromPath(
 
 export function toBinary(msg: any) {
   return Buffer.from(JSON.stringify(msg)).toString('base64')
+}
+
+export async function simulateSwap(
+  amount: string,
+  swapOps: SwapOperation[],
+  client: SigningCosmWasmClient,
+): Promise<string> {
+  let finalAmount = amount
+  let operations: SimulateOperation[] = []
+  for (const [ix, op] of swapOps.entries()) {
+    operations.push({
+      [op.ask.dex.swapName]: {
+        offer_asset_info: toRaw<AssetInfoRaw>(op.offer.assetInfo),
+        ask_asset_info: toRaw<AssetInfoRaw>(op.ask.assetInfo),
+      },
+    })
+    if (op.to || ix === swapOps.length - 1) {
+      finalAmount = await client.queryContractSmart(op.ask.dex.router, {
+        simulate_swap_operations: {
+          offer_amount: finalAmount,
+          operations: operations,
+        },
+      })
+      operations = []
+    }
+  }
+
+  return finalAmount
 }
