@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.0] - 2022-10-15
+### :sparkles: New Features
+- [`f956687`](https://github.com/janfabian/arbitrage-lib/commit/f956687b1b5a83ccf7ff3aaf7914d8c199e1f141) - simulate returns semiresults *(commit by [@janfabian](https://github.com/janfabian))*
+
+### :recycle: Refactors
+- [`4e8da68`](https://github.com/janfabian/arbitrage-lib/commit/4e8da68bea20b763360a68bc40a76db0250710f3) - cosm peerdeps *(commit by [@janfabian](https://github.com/janfabian))*
+
+
 ## [1.4.1] - 2022-10-14
 ### :wrench: Chores
 - [`bd18487`](https://github.com/janfabian/arbitrage-lib/commit/bd18487b959a9ce79dd0b5c6737d7954a1292e54) - **deps**: update dependency jest to v29.2.0 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -121,3 +129,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.3.1]: https://github.com/janfabian/arbitrage-lib/compare/1.3.0...1.3.1
 [1.4.0]: https://github.com/janfabian/arbitrage-lib/compare/1.3.1...1.4.0
 [1.4.1]: https://github.com/janfabian/arbitrage-lib/compare/1.4.0...1.4.1
+[1.5.0]: https://github.com/janfabian/arbitrage-lib/compare/1.4.1...1.5.0
