@@ -345,9 +345,10 @@ describe('lib', () => {
       const client = getMockedClient()
       client.queryContractSmart.mockResolvedValue('101')
 
-      const result = await simulateSwap(amount, swapOps, client)
+      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
 
       expect(result).toBe('101')
+      expect(semiResults).toStrictEqual([])
       expect(client.queryContractSmart).toBeCalledTimes(1)
       expect(client.queryContractSmart).toBeCalledWith(dex1.router, {
         simulate_swap_operations: {
@@ -418,9 +419,10 @@ describe('lib', () => {
       const client = getMockedClient()
       client.queryContractSmart.mockResolvedValueOnce('110')
 
-      const result = await simulateSwap(amount, swapOps, client)
+      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
 
       expect(result).toBe('110')
+      expect(semiResults).toStrictEqual([])
       expect(client.queryContractSmart).toBeCalledTimes(1)
       expect(client.queryContractSmart).toBeCalledWith(dex1.router, {
         simulate_swap_operations: {
@@ -531,9 +533,10 @@ describe('lib', () => {
       client.queryContractSmart.mockResolvedValueOnce('102')
       client.queryContractSmart.mockResolvedValueOnce('103')
 
-      const result = await simulateSwap(amount, swapOps, client)
+      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
 
       expect(result).toBe('103')
+      expect(semiResults).toStrictEqual(['101', '102'])
       expect(client.queryContractSmart).toBeCalledTimes(3)
       expect(client.queryContractSmart).toBeCalledWith(dex1.router, {
         simulate_swap_operations: {

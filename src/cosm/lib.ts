@@ -120,7 +120,8 @@ export async function simulateSwap(
   amount: string,
   swapOps: SwapOperation[],
   client: SigningCosmWasmClient,
-): Promise<string> {
+): Promise<[string, string[]]> {
+  const semiResults: string[] = []
   let finalAmount = amount
   let operations: SimulateOperation[] = []
   for (const [ix, op] of swapOps.entries()) {
@@ -137,9 +138,11 @@ export async function simulateSwap(
           operations: operations,
         },
       })
+      semiResults.push(finalAmount)
+
       operations = []
     }
   }
 
-  return finalAmount
+  return [finalAmount, semiResults.slice(0, -1)]
 }
