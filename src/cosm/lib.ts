@@ -1,4 +1,8 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { toBase64, toUtf8 } from '@cosmjs/encoding'
+import { EncodeObject } from '@cosmjs/proto-signing'
+import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx.js'
+
 import {
   AssetInfo,
   AssetInfoNative,
@@ -10,12 +14,18 @@ import {
   PairTypeXyk,
   SwapOperationRaw,
   SwapOperation,
+  Asset,
+  ExecuteSwapOperation,
+  WasmMessage,
+  FlashLoanMessage,
+  SimulateSwapResponse,
 } from '../types/cosm.js'
 
 export function toRaw<K>(obj: any): K {
-  delete obj.kind
+  const obj_copy = { ...obj }
+  delete obj_copy.kind
 
-  return obj
+  return obj_copy
 }
 
 export function toKindPairType(pairTypeRaw: any) {
@@ -118,9 +128,10 @@ export function toBinary(msg: any) {
 
 export function toSwapOpsRaw(
   swapOps: SwapOperation[],
-): [SwapOperationRaw[][], string[]] {
+): [SwapOperationRaw[][], string[], (string | undefined)[]] {
   const operationsResult: SwapOperationRaw[][] = []
   const dexResult: string[] = []
+  const tos: (string | undefined)[] = []
   let operations: SwapOperationRaw[] = []
   for (const [ix, op] of swapOps.entries()) {
     operations.push({
@@ -131,38 +142,111 @@ export function toSwapOpsRaw(
     })
     if (op.to || ix === swapOps.length - 1) {
       dexResult.push(op.ask.dex.router)
+      tos.push(op.to)
       operationsResult.push(operations)
 
       operations = []
     }
   }
 
-  return [operationsResult, dexResult]
+  return [operationsResult, dexResult, tos]
 }
 
 export async function simulateSwap(
   amount: string,
-  swapOps: SwapOperationRaw[][],
-  dexes: string[],
+  swapOps: SwapOperation[],
   client: SigningCosmWasmClient,
 ): Promise<[string, string[]]> {
-  if (swapOps.length !== dexes.length) {
-    throw new Error(
-      `Nonparsable input, dexes length (${dexes.length}) and swapOps length (${swapOps.length}) differ`,
-    )
-  }
+  const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
   const allResults: string[] = []
   let finalAmount = amount
-  for (const [ix, operations] of swapOps.entries()) {
-    finalAmount = await client.queryContractSmart(dexes[ix], {
-      simulate_swap_operations: {
-        offer_amount: finalAmount,
-        operations: operations,
+  for (const [ix, operations] of swapOpsRaw.entries()) {
+    const response: SimulateSwapResponse = await client.queryContractSmart(
+      dexes[ix],
+      {
+        simulate_swap_operations: {
+          offer_amount: finalAmount,
+          operations: operations,
+        },
       },
-    })
+    )
+
+    finalAmount = response.amount
 
     allResults.push(finalAmount)
   }
 
   return [finalAmount, allResults]
+}
+
+/* c8 ignore start */
+export async function executeSwap(
+  flashLoanAddr: string,
+  flashLoanAsset: Asset,
+  sender: string,
+  minimumReceives: string[],
+  swapOps: SwapOperation[],
+): Promise<EncodeObject[]> {
+  const [swapOpsRaw, dexes, tos] = toSwapOpsRaw(swapOps)
+
+  if (swapOpsRaw.length !== minimumReceives.length) {
+    throw new Error(
+      `Nonparsable input, minimumReceives length (${minimumReceives.length}) and swapOpsRaw length (${swapOpsRaw.length}) differ`,
+    )
+  }
+
+  const msgs: WasmMessage[] = []
+
+  for (const [ix, operations] of swapOpsRaw.entries()) {
+    const swapMsg: ExecuteSwapOperation = {
+      execute_swap_operations: {
+        operations,
+        to: tos[ix],
+        minimum_receive: minimumReceives[ix],
+      },
+    }
+
+    const executeSwapMsg: WasmMessage = {
+      wasm: {
+        execute: {
+          contract_addr: dexes[ix],
+          funds: [],
+          msg: toBase64(toUtf8(JSON.stringify(swapMsg))),
+        },
+      },
+    }
+
+    if (ix === 0) {
+      executeSwapMsg.wasm.execute.funds.push({
+        amount: flashLoanAsset.amount,
+        denom: getDenom(flashLoanAsset.assetInfo),
+      })
+    }
+
+    msgs.push(executeSwapMsg)
+  }
+
+  const flashLoanMessage: FlashLoanMessage = {
+    flash_loan: {
+      assets: [
+        {
+          amount: flashLoanAsset.amount,
+          assetInfo: toRaw<AssetInfoRaw>(flashLoanAsset.assetInfo),
+        },
+      ],
+      msgs: msgs,
+    },
+  }
+
+  const encodedMsgObject: EncodeObject = {
+    typeUrl: '/cosmwasm.wasm.v1.MsgExecuteContract',
+    value: MsgExecuteContract.fromPartial({
+      sender: sender,
+      contract: flashLoanAddr,
+      msg: toUtf8(JSON.stringify(flashLoanMessage)),
+      funds: [],
+    }),
+  }
+
+  return [encodedMsgObject]
 }

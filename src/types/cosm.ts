@@ -5,6 +5,36 @@ export type Pair = {
   pair_type: PairTypeRaw
 }
 
+export type ExecuteSwapOperation = {
+  execute_swap_operations: {
+    operations: SwapOperationRaw[]
+    minimum_receive: undefined | string
+    to: undefined | string
+  }
+}
+
+export type SimulateSwapResponse = {
+  amount: string
+}
+
+export type ExecuteMessage = {
+  execute: {
+    contract_addr: string
+    funds: { amount: string; denom: string }[]
+    msg: string
+  }
+}
+export type WasmMessage = {
+  wasm: ExecuteMessage
+}
+
+export type FlashLoanMessage = {
+  flash_loan: {
+    assets: AssetRaw[]
+    msgs: WasmMessage[]
+  }
+}
+
 export type SwapOperationRaw = {
   [k: string]: {
     offer_asset_info: AssetInfoRaw
@@ -29,6 +59,16 @@ export type PairTypeXyk = {
 export type PairTypeStable = {
   kind: 'stable'
   stable: Record<string, unknown>
+}
+
+export type Asset = {
+  amount: string
+  assetInfo: AssetInfo
+}
+
+export type AssetRaw = {
+  amount: string
+  assetInfo: AssetInfoRaw
 }
 
 export type AssetInfoRaw = Omit<AssetInfo, 'kind'>

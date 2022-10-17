@@ -567,47 +567,6 @@ describe('lib', () => {
         queryContractSmart: jest.fn(),
       } as any as SigningCosmWasmClient)
 
-    it('throws error if simulate ops and dexes length differ', async () => {
-      const amount = '100'
-      const assetMap: GraphAssetNodeMap = {
-        'dexId:A': {
-          assetInfo: {
-            kind: 'native',
-            native_token: {
-              denom: 'A',
-            },
-          },
-          dex: dex1,
-        },
-        'dexId:B': {
-          assetInfo: {
-            kind: 'native',
-            native_token: {
-              denom: 'B',
-            },
-          },
-          dex: dex1,
-        },
-      }
-
-      const swapOps = [
-        {
-          offer: assetMap['dexId:A'],
-          ask: assetMap['dexId:B'],
-        },
-      ]
-      const [swapOpsRaw] = toSwapOpsRaw(swapOps)
-
-      const client = getMockedClient()
-
-      expect.assertions(1)
-      try {
-        await simulateSwap(amount, swapOpsRaw, [], client)
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error)
-      }
-    })
-
     it('simulates swap on single dex', async () => {
       const amount = '100'
       const assetMap: GraphAssetNodeMap = {
@@ -637,17 +596,11 @@ describe('lib', () => {
           ask: assetMap['dexId:B'],
         },
       ]
-      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
 
       const client = getMockedClient()
-      client.queryContractSmart.mockResolvedValue('101')
+      client.queryContractSmart.mockResolvedValue({ amount: '101' })
 
-      const [result, semiResults] = await simulateSwap(
-        amount,
-        swapOpsRaw,
-        dexes,
-        client,
-      )
+      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
 
       expect(result).toBe('101')
       expect(semiResults).toStrictEqual(['101'])
@@ -717,17 +670,11 @@ describe('lib', () => {
           ask: assetMap['dexId:C'],
         },
       ]
-      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
 
       const client = getMockedClient()
-      client.queryContractSmart.mockResolvedValueOnce('110')
+      client.queryContractSmart.mockResolvedValueOnce({ amount: '110' })
 
-      const [result, semiResults] = await simulateSwap(
-        amount,
-        swapOpsRaw,
-        dexes,
-        client,
-      )
+      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
 
       expect(result).toBe('110')
       expect(semiResults).toStrictEqual(['110'])
@@ -835,19 +782,13 @@ describe('lib', () => {
           ask: assetMap['dexId:A'],
         },
       ]
-      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
 
       const client = getMockedClient()
-      client.queryContractSmart.mockResolvedValueOnce('101')
-      client.queryContractSmart.mockResolvedValueOnce('102')
-      client.queryContractSmart.mockResolvedValueOnce('103')
+      client.queryContractSmart.mockResolvedValueOnce({ amount: '101' })
+      client.queryContractSmart.mockResolvedValueOnce({ amount: '102' })
+      client.queryContractSmart.mockResolvedValueOnce({ amount: '103' })
 
-      const [result, semiResults] = await simulateSwap(
-        amount,
-        swapOpsRaw,
-        dexes,
-        client,
-      )
+      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
 
       expect(result).toBe('103')
       expect(semiResults).toStrictEqual(['101', '102', '103'])
