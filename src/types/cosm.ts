@@ -5,7 +5,7 @@ export type Pair = {
   pair_type: PairTypeRaw
 }
 
-export type SimulateOperation = {
+export type SwapOperationRaw = {
   [k: string]: {
     offer_asset_info: AssetInfoRaw
     ask_asset_info: AssetInfoRaw

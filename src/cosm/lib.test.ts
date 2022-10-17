@@ -14,6 +14,7 @@ import {
   toKindAssetInto,
   toKindPairType,
   toRaw,
+  toSwapOpsRaw,
 } from './lib.js'
 
 const dex1: DEX = {
@@ -306,11 +307,306 @@ describe('lib', () => {
     })
   })
 
+  describe('toSwapOpsRaw', () => {
+    it('cretes swapRaw on single dex', () => {
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'B',
+            },
+          },
+          dex: dex1,
+        },
+      }
+
+      const swapOps = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+        },
+      ]
+
+      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
+
+      expect(dexes).toStrictEqual([dex1.router])
+      expect(swapOpsRaw).toStrictEqual([
+        [
+          {
+            [dex1.swapName]: {
+              offer_asset_info: {
+                native_token: {
+                  denom: 'A',
+                },
+              },
+              ask_asset_info: {
+                native_token: {
+                  denom: 'B',
+                },
+              },
+            },
+          },
+        ],
+      ])
+    })
+
+    it('creates multiswapRaw on single dex', async () => {
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'B',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:C': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'C',
+            },
+          },
+          dex: dex1,
+        },
+      }
+
+      const swapOps = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+        },
+        {
+          offer: assetMap['dexId:B'],
+          ask: assetMap['dexId:C'],
+        },
+      ]
+
+      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
+
+      expect(dexes).toStrictEqual([dex1.router])
+      expect(swapOpsRaw).toStrictEqual([
+        [
+          {
+            [dex1.swapName]: {
+              offer_asset_info: {
+                native_token: {
+                  denom: 'A',
+                },
+              },
+              ask_asset_info: {
+                native_token: {
+                  denom: 'B',
+                },
+              },
+            },
+          },
+          {
+            [dex1.swapName]: {
+              offer_asset_info: {
+                native_token: {
+                  denom: 'B',
+                },
+              },
+              ask_asset_info: {
+                token: {
+                  contract_addr: 'C',
+                },
+              },
+            },
+          },
+        ],
+      ])
+    })
+
+    it('creates multiswapRaw on multiple dexes', async () => {
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'B',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:C': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'C',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId2:B': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'B',
+            },
+          },
+          dex: dex2,
+        },
+        'dexId2:C': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'C',
+            },
+          },
+          dex: dex2,
+        },
+      }
+
+      const swapOps: SwapOperation[] = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+          to: dex2.router,
+        },
+        {
+          offer: assetMap['dexId2:B'],
+          ask: assetMap['dexId2:C'],
+          to: dex1.router,
+        },
+        {
+          offer: assetMap['dexId:C'],
+          ask: assetMap['dexId:A'],
+        },
+      ]
+
+      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
+
+      expect(dexes).toStrictEqual([dex1.router, dex2.router, dex1.router])
+      expect(swapOpsRaw).toStrictEqual([
+        [
+          {
+            [dex1.swapName]: {
+              offer_asset_info: {
+                native_token: {
+                  denom: 'A',
+                },
+              },
+              ask_asset_info: {
+                token: {
+                  contract_addr: 'B',
+                },
+              },
+            },
+          },
+        ],
+        [
+          {
+            [dex2.swapName]: {
+              offer_asset_info: {
+                token: {
+                  contract_addr: 'B',
+                },
+              },
+              ask_asset_info: {
+                token: {
+                  contract_addr: 'C',
+                },
+              },
+            },
+          },
+        ],
+        [
+          {
+            [dex1.swapName]: {
+              offer_asset_info: {
+                token: {
+                  contract_addr: 'C',
+                },
+              },
+              ask_asset_info: {
+                native_token: {
+                  denom: 'A',
+                },
+              },
+            },
+          },
+        ],
+      ])
+    })
+  })
+
   describe('simulateSwap', () => {
     const getMockedClient = () =>
       jest.mocked({
         queryContractSmart: jest.fn(),
       } as any as SigningCosmWasmClient)
+
+    it('throws error if simulate ops and dexes length differ', async () => {
+      const amount = '100'
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'B',
+            },
+          },
+          dex: dex1,
+        },
+      }
+
+      const swapOps = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+        },
+      ]
+      const [swapOpsRaw] = toSwapOpsRaw(swapOps)
+
+      const client = getMockedClient()
+
+      expect.assertions(1)
+      try {
+        await simulateSwap(amount, swapOpsRaw, [], client)
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+      }
+    })
 
     it('simulates swap on single dex', async () => {
       const amount = '100'
@@ -341,14 +637,20 @@ describe('lib', () => {
           ask: assetMap['dexId:B'],
         },
       ]
+      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
 
       const client = getMockedClient()
       client.queryContractSmart.mockResolvedValue('101')
 
-      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
+      const [result, semiResults] = await simulateSwap(
+        amount,
+        swapOpsRaw,
+        dexes,
+        client,
+      )
 
       expect(result).toBe('101')
-      expect(semiResults).toStrictEqual([])
+      expect(semiResults).toStrictEqual(['101'])
       expect(client.queryContractSmart).toBeCalledTimes(1)
       expect(client.queryContractSmart).toBeCalledWith(dex1.router, {
         simulate_swap_operations: {
@@ -415,14 +717,20 @@ describe('lib', () => {
           ask: assetMap['dexId:C'],
         },
       ]
+      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
 
       const client = getMockedClient()
       client.queryContractSmart.mockResolvedValueOnce('110')
 
-      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
+      const [result, semiResults] = await simulateSwap(
+        amount,
+        swapOpsRaw,
+        dexes,
+        client,
+      )
 
       expect(result).toBe('110')
-      expect(semiResults).toStrictEqual([])
+      expect(semiResults).toStrictEqual(['110'])
       expect(client.queryContractSmart).toBeCalledTimes(1)
       expect(client.queryContractSmart).toBeCalledWith(dex1.router, {
         simulate_swap_operations: {
@@ -527,16 +835,22 @@ describe('lib', () => {
           ask: assetMap['dexId:A'],
         },
       ]
+      const [swapOpsRaw, dexes] = toSwapOpsRaw(swapOps)
 
       const client = getMockedClient()
       client.queryContractSmart.mockResolvedValueOnce('101')
       client.queryContractSmart.mockResolvedValueOnce('102')
       client.queryContractSmart.mockResolvedValueOnce('103')
 
-      const [result, semiResults] = await simulateSwap(amount, swapOps, client)
+      const [result, semiResults] = await simulateSwap(
+        amount,
+        swapOpsRaw,
+        dexes,
+        client,
+      )
 
       expect(result).toBe('103')
-      expect(semiResults).toStrictEqual(['101', '102'])
+      expect(semiResults).toStrictEqual(['101', '102', '103'])
       expect(client.queryContractSmart).toBeCalledTimes(3)
       expect(client.queryContractSmart).toBeCalledWith(dex1.router, {
         simulate_swap_operations: {

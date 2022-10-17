@@ -8,7 +8,7 @@ import {
   GraphAssetNodeMap,
   PairTypeStable,
   PairTypeXyk,
-  SimulateOperation,
+  SwapOperationRaw,
   SwapOperation,
 } from '../types/cosm.js'
 
@@ -61,7 +61,7 @@ export function getDenom(assetInfo: AssetInfo) {
       const _exhaustiveCheck: never = assetInfo
       return _exhaustiveCheck
     }
-    /* c8 ignore end */
+    /* c8 ignore stop */
   }
 }
 
@@ -116,14 +116,12 @@ export function toBinary(msg: any) {
   return Buffer.from(JSON.stringify(msg)).toString('base64')
 }
 
-export async function simulateSwap(
-  amount: string,
+export function toSwapOpsRaw(
   swapOps: SwapOperation[],
-  client: SigningCosmWasmClient,
-): Promise<[string, string[]]> {
-  const semiResults: string[] = []
-  let finalAmount = amount
-  let operations: SimulateOperation[] = []
+): [SwapOperationRaw[][], string[]] {
+  const operationsResult: SwapOperationRaw[][] = []
+  const dexResult: string[] = []
+  let operations: SwapOperationRaw[] = []
   for (const [ix, op] of swapOps.entries()) {
     operations.push({
       [op.ask.dex.swapName]: {
@@ -132,17 +130,39 @@ export async function simulateSwap(
       },
     })
     if (op.to || ix === swapOps.length - 1) {
-      finalAmount = await client.queryContractSmart(op.ask.dex.router, {
-        simulate_swap_operations: {
-          offer_amount: finalAmount,
-          operations: operations,
-        },
-      })
-      semiResults.push(finalAmount)
+      dexResult.push(op.ask.dex.router)
+      operationsResult.push(operations)
 
       operations = []
     }
   }
 
-  return [finalAmount, semiResults.slice(0, -1)]
+  return [operationsResult, dexResult]
+}
+
+export async function simulateSwap(
+  amount: string,
+  swapOps: SwapOperationRaw[][],
+  dexes: string[],
+  client: SigningCosmWasmClient,
+): Promise<[string, string[]]> {
+  if (swapOps.length !== dexes.length) {
+    throw new Error(
+      `Nonparsable input, dexes length (${dexes.length}) and swapOps length (${swapOps.length}) differ`,
+    )
+  }
+  const allResults: string[] = []
+  let finalAmount = amount
+  for (const [ix, operations] of swapOps.entries()) {
+    finalAmount = await client.queryContractSmart(dexes[ix], {
+      simulate_swap_operations: {
+        offer_amount: finalAmount,
+        operations: operations,
+      },
+    })
+
+    allResults.push(finalAmount)
+  }
+
+  return [finalAmount, allResults]
 }
