@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2022-10-17
+### :sparkles: New Features
+- [`9bcbf41`](https://github.com/janfabian/arbitrage-lib/commit/9bcbf4179ee70f7eeb9fb33d6cbca49fd2be6144) - swap operations raw *(commit by [@janfabian](https://github.com/janfabian))*
+
+
 ## [1.5.0] - 2022-10-15
 ### :sparkles: New Features
 - [`f956687`](https://github.com/janfabian/arbitrage-lib/commit/f956687b1b5a83ccf7ff3aaf7914d8c199e1f141) - simulate returns semiresults *(commit by [@janfabian](https://github.com/janfabian))*
@@ -130,3 +135,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.4.0]: https://github.com/janfabian/arbitrage-lib/compare/1.3.1...1.4.0
 [1.4.1]: https://github.com/janfabian/arbitrage-lib/compare/1.4.0...1.4.1
 [1.5.0]: https://github.com/janfabian/arbitrage-lib/compare/1.4.1...1.5.0
+[1.6.0]: https://github.com/janfabian/arbitrage-lib/compare/1.5.0...1.6.0
