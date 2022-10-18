@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.4] - 2022-10-18
+### :wrench: Chores
+- [`01c06d6`](https://github.com/janfabian/arbitrage-lib/commit/01c06d6888f3e736458c8ae375514517b11cd29b) - **deps**: update jest monorepo *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [1.7.3] - 2022-10-18
 ### :white_check_mark: Tests
 - [`5a52a7c`](https://github.com/janfabian/arbitrage-lib/commit/5a52a7cdb95fadd6cfa67242b8253a6e911596e7) - getExecuteSwapMsg *(commit by [@janfabian](https://github.com/janfabian))*
@@ -160,3 +165,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.7.1]: https://github.com/janfabian/arbitrage-lib/compare/1.7.0...1.7.1
 [1.7.2]: https://github.com/janfabian/arbitrage-lib/compare/1.7.1...1.7.2
 [1.7.3]: https://github.com/janfabian/arbitrage-lib/compare/1.7.2...1.7.3
+[1.7.4]: https://github.com/janfabian/arbitrage-lib/compare/1.7.3...1.7.4
