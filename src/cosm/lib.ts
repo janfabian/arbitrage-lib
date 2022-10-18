@@ -179,8 +179,7 @@ export async function simulateSwap(
   return [finalAmount, allResults]
 }
 
-/* c8 ignore start */
-export function executeSwap(
+export function getExecuteSwapMsg(
   flashLoanAddr: string,
   flashLoanAsset: Asset,
   sender: string,

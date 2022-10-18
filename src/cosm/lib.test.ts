@@ -1,5 +1,8 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { fromBase64, fromUtf8 } from '@cosmjs/encoding'
+import { inspect } from 'util'
 import {
+  Asset,
   AssetInfoNative,
   AssetInfoToken,
   DEX,
@@ -8,6 +11,7 @@ import {
 } from '../types/cosm.js'
 import {
   getDenom,
+  getExecuteSwapMsg,
   simulateSwap,
   swapOpsFromPath,
   toBinary,
@@ -854,6 +858,441 @@ describe('lib', () => {
               },
             },
           ],
+        },
+      })
+    })
+  })
+
+  describe('getExecuteSwapMsg', () => {
+    it('throws error if minimum receive not same', async () => {
+      const amount = '100'
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'B',
+            },
+          },
+          dex: dex1,
+        },
+      }
+
+      const swapOps = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+        },
+      ]
+      const flashLoanAddr = 'flash_loan_addr'
+      const flashLoanAsset: Asset = {
+        amount: amount,
+        assetInfo: {
+          kind: 'native',
+          native_token: {
+            denom: 'uluna',
+          },
+        },
+      }
+      const sender = 'sender'
+
+      expect(() =>
+        getExecuteSwapMsg(flashLoanAddr, flashLoanAsset, sender, [], swapOps),
+      ).toThrowError()
+    })
+
+    it('executes swap on single dex', async () => {
+      const amount = '100'
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'B',
+            },
+          },
+          dex: dex1,
+        },
+      }
+
+      const swapOps = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+        },
+      ]
+      const flashLoanAddr = 'flash_loan_addr'
+      const flashLoanAsset: Asset = {
+        amount: amount,
+        assetInfo: {
+          kind: 'native',
+          native_token: {
+            denom: 'uluna',
+          },
+        },
+      }
+      const sender = 'sender'
+
+      const result = getExecuteSwapMsg(
+        flashLoanAddr,
+        flashLoanAsset,
+        sender,
+        ['101'],
+        swapOps,
+      )
+      const decodedMsg: any = JSON.parse(fromUtf8(result[0].value.msg))
+
+      const decodeSubMsg: any = JSON.parse(
+        fromUtf8(fromBase64(decodedMsg.flash_loan.msgs[0].wasm.execute.msg)),
+      )
+
+      expect(decodedMsg.flash_loan).toEqual(
+        expect.objectContaining({
+          assets: [
+            {
+              amount: amount,
+              info: {
+                native_token: {
+                  denom: 'uluna',
+                },
+              },
+            },
+          ],
+        }),
+      )
+      expect(decodedMsg.flash_loan.msgs).toStrictEqual([
+        {
+          wasm: {
+            execute: expect.objectContaining({
+              contract_addr: dex1.router,
+              funds: [{ amount: '100', denom: 'uluna' }],
+            }),
+          },
+        },
+      ])
+      expect(decodeSubMsg).toStrictEqual({
+        execute_swap_operations: {
+          operations: [
+            {
+              [dex1.swapName]: {
+                offer_asset_info: { native_token: { denom: 'A' } },
+                ask_asset_info: { native_token: { denom: 'B' } },
+              },
+            },
+          ],
+          minimum_receive: '101',
+        },
+      })
+    })
+
+    it('executes multiswap on single dex', async () => {
+      const amount = '100'
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'B',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:C': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'C',
+            },
+          },
+          dex: dex1,
+        },
+      }
+
+      const swapOps = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+        },
+        {
+          offer: assetMap['dexId:B'],
+          ask: assetMap['dexId:C'],
+        },
+      ]
+
+      const flashLoanAddr = 'flash_loan_addr'
+      const flashLoanAsset: Asset = {
+        amount: amount,
+        assetInfo: {
+          kind: 'native',
+          native_token: {
+            denom: 'uluna',
+          },
+        },
+      }
+      const sender = 'sender'
+
+      const result = getExecuteSwapMsg(
+        flashLoanAddr,
+        flashLoanAsset,
+        sender,
+        ['101'],
+        swapOps,
+      )
+      const decodedMsg: any = JSON.parse(fromUtf8(result[0].value.msg))
+
+      const decodeSubMsg: any = JSON.parse(
+        fromUtf8(fromBase64(decodedMsg.flash_loan.msgs[0].wasm.execute.msg)),
+      )
+
+      expect(decodedMsg.flash_loan).toEqual(
+        expect.objectContaining({
+          assets: [
+            {
+              amount: amount,
+              info: {
+                native_token: {
+                  denom: 'uluna',
+                },
+              },
+            },
+          ],
+        }),
+      )
+      expect(decodedMsg.flash_loan.msgs).toStrictEqual([
+        {
+          wasm: {
+            execute: expect.objectContaining({
+              contract_addr: dex1.router,
+              funds: [{ amount: '100', denom: 'uluna' }],
+            }),
+          },
+        },
+      ])
+      expect(decodeSubMsg).toStrictEqual({
+        execute_swap_operations: {
+          operations: [
+            {
+              [dex1.swapName]: {
+                offer_asset_info: { native_token: { denom: 'A' } },
+                ask_asset_info: { native_token: { denom: 'B' } },
+              },
+            },
+            {
+              [dex1.swapName]: {
+                offer_asset_info: { native_token: { denom: 'B' } },
+                ask_asset_info: { token: { contract_addr: 'C' } },
+              },
+            },
+          ],
+          minimum_receive: '101',
+        },
+      })
+    })
+
+    it('simulates multiswap on multiple dexes', async () => {
+      const amount = '100'
+      const assetMap: GraphAssetNodeMap = {
+        'dexId:A': {
+          assetInfo: {
+            kind: 'native',
+            native_token: {
+              denom: 'A',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:B': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'B',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId:C': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'C',
+            },
+          },
+          dex: dex1,
+        },
+        'dexId2:B': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'B',
+            },
+          },
+          dex: dex2,
+        },
+        'dexId2:C': {
+          assetInfo: {
+            kind: 'token',
+            token: {
+              contract_addr: 'C',
+            },
+          },
+          dex: dex2,
+        },
+      }
+
+      const swapOps: SwapOperation[] = [
+        {
+          offer: assetMap['dexId:A'],
+          ask: assetMap['dexId:B'],
+          to: dex2.router,
+        },
+        {
+          offer: assetMap['dexId2:B'],
+          ask: assetMap['dexId2:C'],
+          to: dex1.router,
+        },
+        {
+          offer: assetMap['dexId:C'],
+          ask: assetMap['dexId:A'],
+        },
+      ]
+
+      const flashLoanAddr = 'flash_loan_addr'
+      const flashLoanAsset: Asset = {
+        amount: amount,
+        assetInfo: {
+          kind: 'native',
+          native_token: {
+            denom: 'uluna',
+          },
+        },
+      }
+      const sender = 'sender'
+
+      const result = getExecuteSwapMsg(
+        flashLoanAddr,
+        flashLoanAsset,
+        sender,
+        ['101', '102', '103'],
+        swapOps,
+      )
+      const decodedMsg: any = JSON.parse(fromUtf8(result[0].value.msg))
+
+      const decodeSubMsg1: any = JSON.parse(
+        fromUtf8(fromBase64(decodedMsg.flash_loan.msgs[0].wasm.execute.msg)),
+      )
+      const decodeSubMsg2: any = JSON.parse(
+        fromUtf8(fromBase64(decodedMsg.flash_loan.msgs[1].wasm.execute.msg)),
+      )
+      const decodeSubMsg3: any = JSON.parse(
+        fromUtf8(fromBase64(decodedMsg.flash_loan.msgs[2].wasm.execute.msg)),
+      )
+
+      expect(decodedMsg.flash_loan).toEqual(
+        expect.objectContaining({
+          assets: [
+            {
+              amount: amount,
+              info: {
+                native_token: {
+                  denom: 'uluna',
+                },
+              },
+            },
+          ],
+        }),
+      )
+      expect(decodedMsg.flash_loan.msgs).toStrictEqual([
+        {
+          wasm: {
+            execute: expect.objectContaining({
+              contract_addr: dex1.router,
+              funds: [{ amount: '100', denom: 'uluna' }],
+            }),
+          },
+        },
+        {
+          wasm: {
+            execute: expect.objectContaining({
+              contract_addr: dex2.router,
+              funds: [],
+            }),
+          },
+        },
+        {
+          wasm: {
+            execute: expect.objectContaining({
+              contract_addr: dex1.router,
+              funds: [],
+            }),
+          },
+        },
+      ])
+      expect(decodeSubMsg1).toStrictEqual({
+        execute_swap_operations: {
+          operations: [
+            {
+              [dex1.swapName]: {
+                offer_asset_info: { native_token: { denom: 'A' } },
+                ask_asset_info: { token: { contract_addr: 'B' } },
+              },
+            },
+          ],
+          minimum_receive: '101',
+          to: dex2.router,
+        },
+      })
+      expect(decodeSubMsg2).toStrictEqual({
+        execute_swap_operations: {
+          operations: [
+            {
+              [dex2.swapName]: {
+                offer_asset_info: { token: { contract_addr: 'B' } },
+                ask_asset_info: { token: { contract_addr: 'C' } },
+              },
+            },
+          ],
+          minimum_receive: '102',
+          to: dex1.router,
+        },
+      })
+      expect(decodeSubMsg3).toStrictEqual({
+        execute_swap_operations: {
+          operations: [
+            {
+              [dex1.swapName]: {
+                offer_asset_info: { token: { contract_addr: 'C' } },
+                ask_asset_info: { native_token: { denom: 'A' } },
+              },
+            },
+          ],
+          minimum_receive: '103',
         },
       })
     })
