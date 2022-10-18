@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.2] - 2022-10-18
+### :bug: Bug Fixes
+- [`37018d6`](https://github.com/janfabian/arbitrage-lib/commit/37018d6b99e51e4c00f984e43a1f1327a8e94a91) - flash_loan asset info *(commit by [@janfabian](https://github.com/janfabian))*
+
+
 ## [1.7.1] - 2022-10-17
 ### :wrench: Chores
 - [`e1fb783`](https://github.com/janfabian/arbitrage-lib/commit/e1fb783453ac1b485f111755589d75d0e068ff30) - **deps**: update typescript-eslint monorepo to v5.40.1 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -148,3 +153,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.6.0]: https://github.com/janfabian/arbitrage-lib/compare/1.5.0...1.6.0
 [1.7.0]: https://github.com/janfabian/arbitrage-lib/compare/1.6.0...1.7.0
 [1.7.1]: https://github.com/janfabian/arbitrage-lib/compare/1.7.0...1.7.1
+[1.7.2]: https://github.com/janfabian/arbitrage-lib/compare/1.7.1...1.7.2
