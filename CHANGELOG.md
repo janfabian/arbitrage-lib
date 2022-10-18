@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.7.3] - 2022-10-18
+### :white_check_mark: Tests
+- [`5a52a7c`](https://github.com/janfabian/arbitrage-lib/commit/5a52a7cdb95fadd6cfa67242b8253a6e911596e7) - getExecuteSwapMsg *(commit by [@janfabian](https://github.com/janfabian))*
+
+
 ## [1.7.2] - 2022-10-18
 ### :bug: Bug Fixes
 - [`37018d6`](https://github.com/janfabian/arbitrage-lib/commit/37018d6b99e51e4c00f984e43a1f1327a8e94a91) - flash_loan asset info *(commit by [@janfabian](https://github.com/janfabian))*
@@ -154,3 +159,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [1.7.0]: https://github.com/janfabian/arbitrage-lib/compare/1.6.0...1.7.0
 [1.7.1]: https://github.com/janfabian/arbitrage-lib/compare/1.7.0...1.7.1
 [1.7.2]: https://github.com/janfabian/arbitrage-lib/compare/1.7.1...1.7.2
+[1.7.3]: https://github.com/janfabian/arbitrage-lib/compare/1.7.2...1.7.3
