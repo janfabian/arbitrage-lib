@@ -180,13 +180,13 @@ export async function simulateSwap(
 }
 
 /* c8 ignore start */
-export async function executeSwap(
+export function executeSwap(
   flashLoanAddr: string,
   flashLoanAsset: Asset,
   sender: string,
   minimumReceives: string[],
   swapOps: SwapOperation[],
-): Promise<EncodeObject[]> {
+): EncodeObject[] {
   const [swapOpsRaw, dexes, tos] = toSwapOpsRaw(swapOps)
 
   if (swapOpsRaw.length !== minimumReceives.length) {
@@ -231,7 +231,7 @@ export async function executeSwap(
       assets: [
         {
           amount: flashLoanAsset.amount,
-          assetInfo: toRaw<AssetInfoRaw>(flashLoanAsset.assetInfo),
+          info: toRaw<AssetInfoRaw>(flashLoanAsset.assetInfo),
         },
       ],
       msgs: msgs,

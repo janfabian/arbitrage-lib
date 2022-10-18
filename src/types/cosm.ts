@@ -68,7 +68,7 @@ export type Asset = {
 
 export type AssetRaw = {
   amount: string
-  assetInfo: AssetInfoRaw
+  info: AssetInfoRaw
 }
 
 export type AssetInfoRaw = Omit<AssetInfo, 'kind'>
