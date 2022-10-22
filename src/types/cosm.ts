@@ -10,6 +10,7 @@ export type ExecuteSwapOperation = {
     operations: SwapOperationRaw[]
     minimum_receive: undefined | string
     to: undefined | string
+    max_spread: undefined | string
   }
 }
 

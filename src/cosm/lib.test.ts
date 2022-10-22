@@ -999,6 +999,7 @@ describe('lib', () => {
             },
           ],
           minimum_receive: '101',
+          max_spread: '0.005',
         },
       })
     })
@@ -1112,6 +1113,7 @@ describe('lib', () => {
             },
           ],
           minimum_receive: '101',
+          max_spread: '0.005',
         },
       })
     })
@@ -1266,6 +1268,7 @@ describe('lib', () => {
           ],
           minimum_receive: '101',
           to: dex2.router,
+          max_spread: '0.005',
         },
       })
       expect(decodeSubMsg2).toStrictEqual({
@@ -1280,6 +1283,7 @@ describe('lib', () => {
           ],
           minimum_receive: '102',
           to: dex1.router,
+          max_spread: '0.005',
         },
       })
       expect(decodeSubMsg3).toStrictEqual({
@@ -1293,6 +1297,7 @@ describe('lib', () => {
             },
           ],
           minimum_receive: '103',
+          max_spread: '0.005',
         },
       })
     })

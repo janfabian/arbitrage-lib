@@ -185,6 +185,7 @@ export function getExecuteSwapMsg(
   sender: string,
   minimumReceives: string[],
   swapOps: SwapOperation[],
+  max_spread = '0.005',
 ): EncodeObject[] {
   const [swapOpsRaw, dexes, tos] = toSwapOpsRaw(swapOps)
 
@@ -202,6 +203,7 @@ export function getExecuteSwapMsg(
         operations,
         to: tos[ix],
         minimum_receive: minimumReceives[ix],
+        max_spread: max_spread,
       },
     }
 
