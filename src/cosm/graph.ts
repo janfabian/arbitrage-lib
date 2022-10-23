@@ -91,12 +91,14 @@ export function getPathLength(path: GraphAssetNodeId[]): number {
   }, 0)
 }
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 export function* findPaths(
   graph: Graph,
   from: Set<GraphAssetNodeId>,
   to: Set<GraphAssetNodeId>,
   maxHops: number,
   whitelisted?: Set<GraphAssetNodeId>,
+  blacklisted?: Set<GraphAssetNodeId>,
 ) {
   const toVisit = [...from]
   const paths: GraphAssetNodeId[][] = toVisit.map(() => [])
@@ -126,7 +128,11 @@ export function* findPaths(
         yield path
       }
 
-      if (whitelisted && !whitelisted.has(node)) {
+      if (whitelisted && !whitelisted.has(nodeDenom)) {
+        continue
+      }
+
+      if (blacklisted?.has(nodeDenom)) {
         continue
       }
     }

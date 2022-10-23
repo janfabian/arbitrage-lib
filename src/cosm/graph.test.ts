@@ -411,5 +411,59 @@ describe('graph', () => {
       )
       expect(result).toHaveLength(2)
     })
+
+    it('finds routes with whitelisted', () => {
+      const graph = new Map([
+        ['dexId:A', new Set(['dexId:B', 'dexId:C'])],
+        ['dexId:B', new Set(['dexId:A', 'dexId:C'])],
+        ['dexId:C', new Set(['dexId:B', 'dexId:A'])],
+      ])
+
+      const result = [
+        ...findPaths(
+          graph,
+          new Set(['dexId:A', 'dexId:B']),
+          new Set(['dexId:C']),
+          5,
+          new Set(['B']),
+        ),
+      ]
+
+      expect(result).toEqual(
+        expect.arrayContaining([
+          ['dexId:A', 'dexId:B', 'dexId:C'],
+          ['dexId:A', 'dexId:C'],
+          ['dexId:B', 'dexId:C'],
+        ]),
+      )
+      expect(result).toHaveLength(3)
+    })
+
+    it('skips routes with blacklisted', () => {
+      const graph = new Map([
+        ['dexId:A', new Set(['dexId:B', 'dexId:C'])],
+        ['dexId:B', new Set(['dexId:A', 'dexId:C'])],
+        ['dexId:C', new Set(['dexId:B', 'dexId:A'])],
+      ])
+
+      const result = [
+        ...findPaths(
+          graph,
+          new Set(['dexId:A', 'dexId:B']),
+          new Set(['dexId:C']),
+          5,
+          undefined,
+          new Set(['A', 'B']),
+        ),
+      ]
+
+      expect(result).toEqual(
+        expect.arrayContaining([
+          ['dexId:A', 'dexId:C'],
+          ['dexId:B', 'dexId:C'],
+        ]),
+      )
+      expect(result).toHaveLength(2)
+    })
   })
 })
