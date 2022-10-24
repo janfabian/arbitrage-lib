@@ -1,5 +1,6 @@
-import { DEX, Graph, GraphAssetNode, GraphAssetNodeId } from '../types/cosm.js'
-import { getDenom } from './lib.js'
+import { getDenom } from '../lib.js'
+import { Graph, GraphAssetNode, GraphAssetNodeId } from '../types/graph.js'
+import { DEX } from '../types/cosm.js'
 
 export function decodeGraphNodeId(graphNodeId: GraphAssetNodeId) {
   const result = graphNodeId.split(':')

@@ -1,16 +1,8 @@
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { fromBase64, fromUtf8 } from '@cosmjs/encoding'
-import { inspect } from 'util'
+import { Asset, DEX, SwapOperation } from '../types/cosm.js'
+import { GraphAssetNodeMap } from '../types/graph.js'
 import {
-  Asset,
-  AssetInfoNative,
-  AssetInfoToken,
-  DEX,
-  GraphAssetNodeMap,
-  SwapOperation,
-} from '../types/cosm.js'
-import {
-  getDenom,
   getExecuteSwapMsg,
   simulateSwap,
   swapOpsFromPath,
@@ -19,7 +11,7 @@ import {
   toKindPairType,
   toRaw,
   toSwapOpsRaw,
-} from './lib.js'
+} from './cosm.js'
 
 const dex1: DEX = {
   id: 'dexId',
@@ -37,7 +29,7 @@ const dex2: DEX = {
   label: 'my dex2',
 }
 
-describe('lib', () => {
+describe('cosm', () => {
   describe('toRaw', () => {
     it('removes kind property', () => {
       const obj = {
@@ -80,30 +72,6 @@ describe('lib', () => {
       const result = toKindAssetInto({ native_token: native_token })
       expect(result).toHaveProperty('kind', 'native')
       expect(result).toHaveProperty('native_token', native_token)
-    })
-  })
-
-  describe('getDenom', () => {
-    it('get native denom', () => {
-      const obj: AssetInfoNative = {
-        kind: 'native',
-        native_token: {
-          denom: 'native_denom',
-        },
-      }
-
-      expect(getDenom(obj)).toEqual('native_denom')
-    })
-
-    it('get token denom', () => {
-      const obj: AssetInfoToken = {
-        kind: 'token',
-        token: {
-          contract_addr: 'token_addr',
-        },
-      }
-
-      expect(getDenom(obj)).toEqual('token_addr')
     })
   })
 

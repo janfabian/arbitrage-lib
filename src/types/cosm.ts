@@ -1,3 +1,5 @@
+import { GraphAssetNode } from './graph.js'
+
 export type Pair = {
   asset_infos: AssetInfoRaw[]
   contract_addr: string
@@ -100,15 +102,3 @@ export type DEX = {
   router: string
   swapName: string
 }
-
-export type GraphAssetNodeMap = {
-  [key: GraphAssetNodeId]: GraphAssetNode
-}
-
-export type GraphAssetNode = {
-  dex: DEX
-  assetInfo: AssetInfo
-}
-
-export type GraphAssetNodeId = string
-export type Graph = Map<GraphAssetNodeId, Set<GraphAssetNodeId>>

@@ -2,14 +2,13 @@ import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
 import { toBase64, toUtf8 } from '@cosmjs/encoding'
 import { EncodeObject } from '@cosmjs/proto-signing'
 import { MsgExecuteContract } from 'cosmjs-types/cosmwasm/wasm/v1/tx.js'
+import { getDenom } from '../lib.js'
+import { GraphAssetNodeId, GraphAssetNodeMap } from '../types/graph.js'
 
 import {
-  AssetInfo,
   AssetInfoNative,
   AssetInfoRaw,
   AssetInfoToken,
-  GraphAssetNodeId,
-  GraphAssetNodeMap,
   PairTypeStable,
   PairTypeXyk,
   SwapOperationRaw,
@@ -57,21 +56,6 @@ export function toKindAssetInto(assetInfo: any) {
       kind: 'native',
       ...assetInfo,
     } as AssetInfoNative
-  }
-}
-
-export function getDenom(assetInfo: AssetInfo) {
-  switch (assetInfo.kind) {
-    case 'native':
-      return assetInfo.native_token.denom
-    case 'token':
-      return assetInfo.token.contract_addr
-    /* c8 ignore start */
-    default: {
-      const _exhaustiveCheck: never = assetInfo
-      return _exhaustiveCheck
-    }
-    /* c8 ignore stop */
   }
 }
 

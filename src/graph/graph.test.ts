@@ -1,4 +1,5 @@
-import { DEX, GraphAssetNode } from '../types/cosm.js'
+import { DEX } from '../types/cosm.js'
+import { GraphAssetNode } from '../types/graph.js'
 import {
   createGraph,
   decodeGraphNodeId,
