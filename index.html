@@ -12,10 +12,11 @@
     <section>
         <h1>Arbitrage lib docs</h1>
         <p>
-            Select version
+            
         </p>
         <select id="version" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
-            <option value="/version/latest">latest</option>
+            <option value="">Select version</option>
+            <option value="./version/latest/">latest</option>
         </select>
     </section>
     <script>
@@ -25,7 +26,7 @@
 
             data.filter(i => Boolean(i.name)).forEach((i) => {
                 let option = document.createElement("option")
-                option.setAttribute("value", "/version/" + i.name);
+                option.setAttribute("value", "./version/" + i.name + "/");
                 option.append(i.name)
                 
                 select.append(option);
