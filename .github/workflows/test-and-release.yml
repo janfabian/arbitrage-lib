@@ -85,6 +85,7 @@ jobs:
           clean: true
           clean-exclude: |
             version
+            index.html
           branch: gh-pages
       - name: Deploy latest docs
         uses: JamesIves/github-pages-deploy-action@v4
@@ -95,4 +96,5 @@ jobs:
           clean: true
           clean-exclude: |
             version
+            index.html
           branch: gh-pages
