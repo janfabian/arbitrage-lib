@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.9] - 2022-10-25
+### :wrench: Chores
+- [`61ecbc5`](https://github.com/janfabian/arbitrage-lib/commit/61ecbc50687c3736b76e8fb7bbd6aae70eba9297) - **deps**: update dependency @cosmjs/cosmwasm-stargate to v0.29.3 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.0.7] - 2022-10-25
 ### :wrench: Chores
 - [`a011f2a`](https://github.com/janfabian/arbitrage-lib/commit/a011f2ae9c1335b90c6a6bd74be46fc2be026037) - remove clean *(commit by [@janfabian](https://github.com/janfabian))*
@@ -220,3 +225,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.0.4]: https://github.com/janfabian/arbitrage-lib/compare/2.0.3...2.0.4
 [2.0.5]: https://github.com/janfabian/arbitrage-lib/compare/2.0.4...2.0.5
 [2.0.7]: https://github.com/janfabian/arbitrage-lib/compare/2.0.6...2.0.7
+[2.0.9]: https://github.com/janfabian/arbitrage-lib/compare/2.0.8...2.0.9
