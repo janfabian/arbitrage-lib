@@ -86,9 +86,13 @@ jobs:
           clean-exclude: |
             version
           branch: gh-pages
-      # - name: Deploy docs latest
-      #   uses: JamesIves/github-pages-deploy-action@v4
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-      #     folder: docs
-      #     target-folder: latest
+      - name: Deploy latest docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: docs
+          target-folder: version/latest
+          clean: true
+          clean-exclude: |
+            version
+          branch: gh-pages
