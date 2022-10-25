@@ -82,10 +82,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           folder: docs
           target-folder: version/${{ steps.version-bump.outputs.newTag }}
-          clean: true
-          clean-exclude: |
-            version
-            index.html
           branch: gh-pages
       - name: Deploy latest docs
         uses: JamesIves/github-pages-deploy-action@v4
@@ -93,8 +89,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           folder: docs
           target-folder: version/latest
-          clean: true
-          clean-exclude: |
-            version
-            index.html
           branch: gh-pages
