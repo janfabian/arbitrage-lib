@@ -75,3 +75,20 @@ jobs:
           tag: ${{ steps.version-bump.outputs.newTag }}
           body: ${{ steps.changelog.outputs.changes }}
           token: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm run typedoc
+      - name: Deploy docs
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          folder: docs
+          target-folder: version/${{ steps.version-bump.outputs.newTag }}
+          clean: true
+          clean-exclude: |
+            version
+          branch: gh-pages
+      # - name: Deploy docs latest
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     folder: docs
+      #     target-folder: latest
