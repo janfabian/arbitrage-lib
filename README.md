@@ -5,3 +5,7 @@
 ```
 npm i @janfabian/arbitrage-lib
 ```
+
+##  Documentation
+
+https://janfabian.github.io/arbitrage-lib/version/latest/

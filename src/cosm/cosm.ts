@@ -20,6 +20,11 @@ import {
   SimulateSwapResponse,
 } from '../types/cosm.js'
 
+/**
+ * Helper function, exports custom typed object to raw object by deleting `kind` attr
+ * @param {Object} obj
+ * @returns
+ */
 export function toRaw<K>(obj: any): K {
   const obj_copy = { ...obj }
   delete obj_copy.kind
