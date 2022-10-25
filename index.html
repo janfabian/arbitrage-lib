@@ -1,0 +1,37 @@
+<html>
+  <head>
+    <title>Arbitrage lib docs</title>
+    <style>
+        section {
+            margin: auto;
+            width: 50%;
+        }
+    </style>
+  </head>
+  <body>
+    <section>
+        <h1>Arbitrage lib docs</h1>
+        <p>
+            Select version
+        </p>
+        <select id="version" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">
+            <option value="/version/latest">latest</option>
+        </select>
+    </section>
+    <script>
+        fetch("https://api.github.com/repos/janfabian/arbitrage-lib/tags").then(r => r.json()).then((data) => {
+
+            const select = document.querySelector("select#version")
+
+            data.filter(i => Boolean(i.name)).forEach((i) => {
+                let option = document.createElement("option")
+                option.setAttribute("value", "/version/" + i.name);
+                option.append(i.name)
+                
+                select.append(option);
+            })
+
+        })
+    </script>
+  </body>
+</html>
