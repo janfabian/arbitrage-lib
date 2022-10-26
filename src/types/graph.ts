@@ -1,4 +1,5 @@
 import { AssetInfo, DEX } from './cosm.js'
+import { AssetInfoJuno } from './juno.js'
 
 export type GraphAssetNodeMap = {
   [key: GraphAssetNodeId]: GraphAssetNode
@@ -6,7 +7,7 @@ export type GraphAssetNodeMap = {
 
 export type GraphAssetNode = {
   dex: DEX
-  assetInfo: AssetInfo
+  assetInfo: AssetInfo | AssetInfoJuno
 }
 
 export type GraphAssetNodeId = string

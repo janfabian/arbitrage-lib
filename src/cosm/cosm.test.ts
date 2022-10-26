@@ -7,7 +7,7 @@ import {
   simulateSwap,
   swapOpsFromPath,
   toBinary,
-  toKindAssetInto,
+  toKindAssetInfo,
   toKindPairType,
   toRaw,
   toSwapOpsRaw,
@@ -59,19 +59,37 @@ describe('cosm', () => {
     })
   })
 
-  describe('toKindAssetInto', () => {
+  describe('toKindAssetInfo', () => {
     it('returns token', () => {
       const token = { foo: 'bar' }
-      const result = toKindAssetInto({ token: token })
+      const result = toKindAssetInfo({ token: token })
       expect(result).toHaveProperty('kind', 'token')
       expect(result).toHaveProperty('token', token)
     })
 
     it('returns native', () => {
       const native_token = { foo: 'bar' }
-      const result = toKindAssetInto({ native_token: native_token })
+      const result = toKindAssetInfo({ native_token: native_token })
       expect(result).toHaveProperty('kind', 'native')
       expect(result).toHaveProperty('native_token', native_token)
+    })
+
+    it('returns token JUNO', () => {
+      const token = { foo: 'bar' }
+      const result = toKindAssetInfo({ cw20: token })
+      expect(result).toHaveProperty('kind', 'juno_token')
+      expect(result).toHaveProperty('cw20', token)
+    })
+
+    it('returns native JUNO', () => {
+      const native_token = { foo: 'bar' }
+      const result = toKindAssetInfo({ native: native_token })
+      expect(result).toHaveProperty('kind', 'juno_native')
+      expect(result).toHaveProperty('native', native_token)
+    })
+
+    it('throws error if unknown type', () => {
+      expect(() => toKindAssetInfo({})).toThrowError()
     })
   })
 
