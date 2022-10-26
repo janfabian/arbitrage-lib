@@ -18,7 +18,13 @@ import {
   WasmMessage,
   FlashLoanMessage,
   SimulateSwapResponse,
+  AssetInfo,
 } from '../types/cosm.js'
+import {
+  AssetInfoJuno,
+  AssetInfoNativeJuno,
+  AssetInfoTokenJuno,
+} from '../types/juno.js'
 
 /**
  * Helper function, exports custom typed object to raw object by deleting `kind` attr
@@ -48,7 +54,24 @@ export function toKindPairType(pairTypeRaw: any) {
   }
 }
 
-export function toKindAssetInto(assetInfo: any) {
+/**
+ * It converts raw object from query to typed object
+ * 
+ * @example
+ * 
+const result = toKindAssetInfo({ 
+  token: { 
+    contract_addr: 'contract_addr' 
+  }
+})
+expect(result).toHaveProperty('kind', 'token')
+
+ * @example
+ * 
+const result = toKindAssetInfo({ cw20: 'juno_contract_addr' })
+expect(result).toHaveProperty('kind', 'juno_token')
+ */
+export function toKindAssetInfo(assetInfo: any): AssetInfo | AssetInfoJuno {
   if (assetInfo.token) {
     return {
       kind: 'token',
@@ -62,6 +85,22 @@ export function toKindAssetInto(assetInfo: any) {
       ...assetInfo,
     } as AssetInfoNative
   }
+
+  if (assetInfo.cw20) {
+    return {
+      kind: 'juno_token',
+      cw20: assetInfo.cw20,
+    } as AssetInfoTokenJuno
+  }
+
+  if (assetInfo.native) {
+    return {
+      kind: 'juno_native',
+      native: assetInfo.native,
+    } as AssetInfoNativeJuno
+  }
+
+  throw new Error('unknown asset info')
 }
 
 export function swapOpsFromPath(
