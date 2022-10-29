@@ -4,6 +4,7 @@
  * @module
  */
 
+import { Decimal, Uint64 } from '@cosmjs/math'
 import { AssetInfo } from './types/cosm.js'
 import { AssetInfoJuno } from './types/juno.js'
 
@@ -38,4 +39,15 @@ export function getDenom(assetInfo: AssetInfo | AssetInfoJuno) {
     }
     /* c8 ignore stop */
   }
+}
+
+export function multiplyDecimals(
+  a: Decimal,
+  b: Decimal,
+  numOfDecimals: number,
+) {
+  return Decimal.fromAtomics(
+    a.multiply(Uint64.fromString(b.atomics)).atomics.slice(0, -numOfDecimals),
+    numOfDecimals,
+  )
 }

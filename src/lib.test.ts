@@ -1,4 +1,5 @@
-import { getDenom } from './lib.js'
+import { Decimal } from '@cosmjs/math'
+import { getDenom, multiplyDecimals } from './lib.js'
 import { AssetInfoNative, AssetInfoToken } from './types/cosm.js'
 import { AssetInfoNativeJuno, AssetInfoTokenJuno } from './types/juno.js'
 
@@ -42,6 +43,22 @@ describe('lib', () => {
       }
 
       expect(getDenom(obj)).toEqual('token_addr')
+    })
+  })
+
+  describe('multiplyDecimals', () => {
+    it('multiplies decimals', () => {
+      const a = Decimal.fromUserInput('100', 6)
+      const b = Decimal.fromUserInput('0.5', 6)
+
+      expect(multiplyDecimals(a, b, 6).toString()).toBe('50')
+    })
+
+    it('multiplies decimals', () => {
+      const a = Decimal.fromUserInput('1000', 6)
+      const b = Decimal.fromUserInput('0.995', 6)
+
+      expect(multiplyDecimals(a, b, 6).toString()).toBe('995')
     })
   })
 })
