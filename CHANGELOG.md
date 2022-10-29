@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2022-10-29
+### :sparkles: New Features
+- [`3aa281b`](https://github.com/janfabian/arbitrage-lib/commit/3aa281ba1f58222e90d32628d9bc92a2b1dad4d8) - introduce juno *(commit by [@janfabian](https://github.com/janfabian))*
+- [`70599ff`](https://github.com/janfabian/arbitrage-lib/commit/70599ffe68a28ca1236ebe3cdf4bbc49fa45628c) - multiply decimals *(commit by [@janfabian](https://github.com/janfabian))*
+
+### :white_check_mark: Tests
+- [`7dc3424`](https://github.com/janfabian/arbitrage-lib/commit/7dc3424c6e4101bbd10e95f7ac6afe95ab87b7b9) - **juno**: added *(commit by [@janfabian](https://github.com/janfabian))*
+
+
 ## [2.0.15] - 2022-10-28
 ### :wrench: Chores
 - [`e97a594`](https://github.com/janfabian/arbitrage-lib/commit/e97a594c4bda46b041527f4ca643e410a6c12f07) - **deps**: update dependency typedoc to v0.23.19 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -262,3 +271,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.0.13]: https://github.com/janfabian/arbitrage-lib/compare/2.0.12...2.0.13
 [2.0.14]: https://github.com/janfabian/arbitrage-lib/compare/2.0.13...2.0.14
 [2.0.15]: https://github.com/janfabian/arbitrage-lib/compare/2.0.14...2.0.15
+[2.1.0]: https://github.com/janfabian/arbitrage-lib/compare/2.0.15...2.1.0
