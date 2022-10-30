@@ -208,13 +208,11 @@ export async function simulateSwap(
 }
 
 export function getExecuteSwapMsg(
-  flashLoanAddr: string,
   flashLoanAsset: Asset,
-  sender: string,
   minimumReceives: string[],
   swapOps: SwapOperation[],
   max_spread = '0.005',
-): EncodeObject[] {
+): WasmMessage[] {
   const [swapOpsRaw, dexes, tos] = toSwapOpsRaw(swapOps)
 
   if (swapOpsRaw.length !== minimumReceives.length) {
@@ -255,6 +253,15 @@ export function getExecuteSwapMsg(
     msgs.push(executeSwapMsg)
   }
 
+  return msgs
+}
+
+export function flashloan(
+  flashLoanAddr: string,
+  flashLoanAsset: Asset,
+  msgs: WasmMessage[],
+  sender: string,
+): EncodeObject[] {
   const flashLoanMessage: FlashLoanMessage = {
     flash_loan: {
       assets: [

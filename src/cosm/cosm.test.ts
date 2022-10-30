@@ -3,6 +3,7 @@ import { fromBase64, fromUtf8 } from '@cosmjs/encoding'
 import { Asset, DEX, SwapOperation } from '../types/cosm.js'
 import { GraphAssetNodeMap } from '../types/graph.js'
 import {
+  flashloan,
   getExecuteSwapMsg,
   simulateSwap,
   swapOpsFromPath,
@@ -879,7 +880,7 @@ describe('cosm', () => {
           ask: assetMap['dexId:B'],
         },
       ]
-      const flashLoanAddr = 'flash_loan_addr'
+
       const flashLoanAsset: Asset = {
         amount: amount,
         assetInfo: {
@@ -889,10 +890,9 @@ describe('cosm', () => {
           },
         },
       }
-      const sender = 'sender'
 
       expect(() =>
-        getExecuteSwapMsg(flashLoanAddr, flashLoanAsset, sender, [], swapOps),
+        getExecuteSwapMsg(flashLoanAsset, [], swapOps),
       ).toThrowError()
     })
 
@@ -937,13 +937,8 @@ describe('cosm', () => {
       }
       const sender = 'sender'
 
-      const result = getExecuteSwapMsg(
-        flashLoanAddr,
-        flashLoanAsset,
-        sender,
-        ['101'],
-        swapOps,
-      )
+      const msgs = getExecuteSwapMsg(flashLoanAsset, ['101'], swapOps)
+      const result = flashloan(flashLoanAddr, flashLoanAsset, msgs, sender)
       const decodedMsg: any = JSON.parse(fromUtf8(result[0].value.msg))
 
       const decodeSubMsg: any = JSON.parse(
@@ -1045,13 +1040,8 @@ describe('cosm', () => {
       }
       const sender = 'sender'
 
-      const result = getExecuteSwapMsg(
-        flashLoanAddr,
-        flashLoanAsset,
-        sender,
-        ['101'],
-        swapOps,
-      )
+      const msgs = getExecuteSwapMsg(flashLoanAsset, ['101'], swapOps)
+      const result = flashloan(flashLoanAddr, flashLoanAsset, msgs, sender)
       const decodedMsg: any = JSON.parse(fromUtf8(result[0].value.msg))
 
       const decodeSubMsg: any = JSON.parse(
@@ -1183,13 +1173,13 @@ describe('cosm', () => {
       }
       const sender = 'sender'
 
-      const result = getExecuteSwapMsg(
-        flashLoanAddr,
+      const msgs = getExecuteSwapMsg(
         flashLoanAsset,
-        sender,
         ['101', '102', '103'],
         swapOps,
       )
+      const result = flashloan(flashLoanAddr, flashLoanAsset, msgs, sender)
+
       const decodedMsg: any = JSON.parse(fromUtf8(result[0].value.msg))
 
       const decodeSubMsg1: any = JSON.parse(
