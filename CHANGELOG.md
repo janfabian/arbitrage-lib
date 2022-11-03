@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.5] - 2022-11-03
+### :wrench: Chores
+- [`433ad4b`](https://github.com/janfabian/arbitrage-lib/commit/433ad4bac5706bad3ae6e9d789fb380665fd0900) - **deps**: update dependency @types/jest to v29.2.1 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+- [`3bc3794`](https://github.com/janfabian/arbitrage-lib/commit/3bc37945749dc83721157b2918dcc822c5c9bff1) - **deps**: update dependency @types/node to v18.11.9 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+- [`c03b6b8`](https://github.com/janfabian/arbitrage-lib/commit/c03b6b8c1a11054d2c14180d18729648c7e85e6c) - **deps**: update typescript-eslint monorepo to v5.42.0 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+- [`b60b6c7`](https://github.com/janfabian/arbitrage-lib/commit/b60b6c7fb7f9691ef0c0723098f7efb2753a6c63) - **deps**: update dependency typedoc to v0.23.20 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.1.0] - 2022-10-29
 ### :sparkles: New Features
 - [`3aa281b`](https://github.com/janfabian/arbitrage-lib/commit/3aa281ba1f58222e90d32628d9bc92a2b1dad4d8) - introduce juno *(commit by [@janfabian](https://github.com/janfabian))*
@@ -272,3 +280,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.0.14]: https://github.com/janfabian/arbitrage-lib/compare/2.0.13...2.0.14
 [2.0.15]: https://github.com/janfabian/arbitrage-lib/compare/2.0.14...2.0.15
 [2.1.0]: https://github.com/janfabian/arbitrage-lib/compare/2.0.15...2.1.0
+[2.1.5]: https://github.com/janfabian/arbitrage-lib/compare/2.2.3...2.1.5
