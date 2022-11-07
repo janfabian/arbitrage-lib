@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.9] - 2022-11-07
+### :wrench: Chores
+- [`1f8eef0`](https://github.com/janfabian/arbitrage-lib/commit/1f8eef006d8a89e19dda528468613f9da121618a) - **deps**: update typescript-eslint monorepo to v5.42.1 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.1.8] - 2022-11-06
 ### :wrench: Chores
 - [`0e0b415`](https://github.com/janfabian/arbitrage-lib/commit/0e0b4155be19f4653a52042c0d79167769adf6ca) - **deps**: update dependency eslint to v8.27.0 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -299,3 +304,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.1.6]: https://github.com/janfabian/arbitrage-lib/compare/2.1.5...2.1.6
 [2.1.7]: https://github.com/janfabian/arbitrage-lib/compare/2.1.6...2.1.7
 [2.1.8]: https://github.com/janfabian/arbitrage-lib/compare/2.1.7...2.1.8
+[2.1.9]: https://github.com/janfabian/arbitrage-lib/compare/2.1.8...2.1.9
