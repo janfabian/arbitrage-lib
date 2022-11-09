@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.11] - 2022-11-09
+### :wrench: Chores
+- [`f731b66`](https://github.com/janfabian/arbitrage-lib/commit/f731b668fbc14166accd0d25ee5204e2524ceee2) - **deps**: update dependency jest to v29.3.1 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.1.10] - 2022-11-08
 ### :wrench: Chores
 - [`f4e0211`](https://github.com/janfabian/arbitrage-lib/commit/f4e0211ce72b69c0782e7f153414ace2668d1e79) - **deps**: update dependency jest to v29.3.0 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -311,3 +316,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.1.8]: https://github.com/janfabian/arbitrage-lib/compare/2.1.7...2.1.8
 [2.1.9]: https://github.com/janfabian/arbitrage-lib/compare/2.1.8...2.1.9
 [2.1.10]: https://github.com/janfabian/arbitrage-lib/compare/2.1.9...2.1.10
+[2.1.11]: https://github.com/janfabian/arbitrage-lib/compare/2.1.10...2.1.11
