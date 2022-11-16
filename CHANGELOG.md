@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.17] - 2022-11-16
+### :wrench: Chores
+- [`7f24b94`](https://github.com/janfabian/arbitrage-lib/commit/7f24b942248b885cef38f8752d89c32613d13336) - **deps**: update dependency @cosmjs/encoding to v0.29.4 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.1.16] - 2022-11-16
 ### :wrench: Chores
 - [`4ebc054`](https://github.com/janfabian/arbitrage-lib/commit/4ebc054e96cb3e46b28b5796f6107311f969170e) - **deps**: update dependency @cosmjs/cosmwasm-stargate to v0.29.4 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -347,3 +352,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.1.14]: https://github.com/janfabian/arbitrage-lib/compare/2.1.13...2.1.14
 [2.1.15]: https://github.com/janfabian/arbitrage-lib/compare/2.1.14...2.1.15
 [2.1.16]: https://github.com/janfabian/arbitrage-lib/compare/2.1.15...2.1.16
+[2.1.17]: https://github.com/janfabian/arbitrage-lib/compare/2.1.16...2.1.17
