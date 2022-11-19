@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.20] - 2022-11-19
+### :wrench: Chores
+- [`6dd0ee2`](https://github.com/janfabian/arbitrage-lib/commit/6dd0ee20ea6205a214a433b4fb70d2456b7584de) - **deps**: update dependency eslint to v8.28.0 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.1.19] - 2022-11-17
 ### :wrench: Chores
 - [`b16c482`](https://github.com/janfabian/arbitrage-lib/commit/b16c4821d0cefcf728dafd37e89918284d71cd60) - **deps**: update dependency @cosmjs/proto-signing to v0.29.4 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -365,3 +370,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.1.17]: https://github.com/janfabian/arbitrage-lib/compare/2.1.16...2.1.17
 [2.1.18]: https://github.com/janfabian/arbitrage-lib/compare/2.1.17...2.1.18
 [2.1.19]: https://github.com/janfabian/arbitrage-lib/compare/2.1.18...2.1.19
+[2.1.20]: https://github.com/janfabian/arbitrage-lib/compare/2.1.19...2.1.20
