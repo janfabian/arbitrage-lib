@@ -65,7 +65,7 @@
     "typescript": "4.9.3"
   },
   "peerDependencies": {
-    "@cosmjs/cosmwasm-stargate": "0.29.4",
+    "@cosmjs/cosmwasm-stargate": "0.29.5",
     "@cosmjs/encoding": "0.29.4",
     "@cosmjs/math": "0.29.4",
     "@cosmjs/proto-signing": "0.29.4",
