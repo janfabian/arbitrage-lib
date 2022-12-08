@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.32] - 2022-12-08
+### :wrench: Chores
+- [`cf4863c`](https://github.com/janfabian/arbitrage-lib/commit/cf4863c31cef6697407c2315bee7ffea6dd0a1aa) - **deps**: update dependency @cosmjs/math to v0.29.5 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.1.31] - 2022-12-08
 ### :wrench: Chores
 - [`52ed11a`](https://github.com/janfabian/arbitrage-lib/commit/52ed11a4dae698ba04f847ae90793fc0310200a2) - **deps**: update dependency @cosmjs/encoding to v0.29.5 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -437,3 +442,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.1.29]: https://github.com/janfabian/arbitrage-lib/compare/2.1.28...2.1.29
 [2.1.30]: https://github.com/janfabian/arbitrage-lib/compare/2.1.29...2.1.30
 [2.1.31]: https://github.com/janfabian/arbitrage-lib/compare/2.1.30...2.1.31
+[2.1.32]: https://github.com/janfabian/arbitrage-lib/compare/2.1.31...2.1.32
