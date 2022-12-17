@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.45] - 2022-12-17
+### :wrench: Chores
+- [`60d5471`](https://github.com/janfabian/arbitrage-lib/commit/60d54716a3ae2e8430817587dcf388bef34920fc) - **deps**: update dependency eslint to v8.30.0 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
+
+
 ## [2.1.44] - 2022-12-17
 ### :wrench: Chores
 - [`0aa205f`](https://github.com/janfabian/arbitrage-lib/commit/0aa205fa5008114a99586f052b23b9ee763bafab) - **deps**: update dependency @types/node to v18.11.16 *(commit by [@renovate[bot]](https://github.com/apps/renovate))*
@@ -515,3 +520,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.1.42]: https://github.com/janfabian/arbitrage-lib/compare/2.1.41...2.1.42
 [2.1.43]: https://github.com/janfabian/arbitrage-lib/compare/2.1.42...2.1.43
 [2.1.44]: https://github.com/janfabian/arbitrage-lib/compare/2.1.43...2.1.44
+[2.1.45]: https://github.com/janfabian/arbitrage-lib/compare/2.1.44...2.1.45
